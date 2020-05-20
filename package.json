@@ -1,0 +1,28 @@
+{
+  "name": "Rem-front-end",
+  "version": "1.0.0",
+  "description": "the project is front-end for rem backend",
+  "author": "ANKI Tech",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "nuxt": "^2.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-loader": "^3.0.2",
+    "eslint-plugin-vue": "^5.2.3",
+    "node-sass": "^4.14.1",
+    "postcss": "^7.0.30",
+    "postcss-hexrgba": "^2.0.0",
+    "postcss-url": "^8.0.0",
+    "sass-loader": "^8.0.2",
+    "postcss-nested": "^4.2.1",
+    "postcss-responsive-type": "^1.0.0"
+  }
+}

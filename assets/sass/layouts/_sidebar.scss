@@ -1,0 +1,51 @@
+.sidebar {
+  height: 100%;
+  background-color: #197aff;
+  &__header {
+    img {
+      margin: auto;
+      padding-top: 10px;
+      display: block;
+      width: 54px;
+    }
+  }
+
+  &__body {
+    margin-top: 155px;
+    &--list-icons {
+      padding: 0;
+      li.dashboard {
+        margin: 0 !important;
+      }
+
+      li.settings {
+        svg {
+            width: 33px !important;
+        }
+      }
+
+      li {
+        margin-top: 30px;
+        list-style: none;
+        .icon {
+          a {
+            display: block;
+            svg {
+                width: 38px;
+                height: auto;
+              margin-top: 30px;
+              list-style: none;
+                  padding: 27px 7px;
+              display: block;
+    margin: auto;
+            }
+          }
+          a.nuxt-link-exact-active  {
+            background-color: rgba($color: #FFFFFF, $alpha: 0.2)
+          }
+        }
+      }
+
+    }
+  }
+}

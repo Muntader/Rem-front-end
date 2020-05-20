@@ -1,0 +1,30 @@
+@import "base.scss";
+@import "components/dropdown";
+
+html,
+body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+  color: #070707;
+}
+
+.app {
+  .app-layout {
+    display: flex;
+    &__sidebar {
+      width: 85px;
+      height: 100%;
+      position: fixed;
+      @import "layouts/sidebar";
+    }
+    &__body {
+      width: 100%;
+      margin: 31px 31px 65px 114px;
+      &--header {
+        @import "layouts/navbar";
+      }
+    }
+  }
+}
