@@ -1,5 +1,6 @@
 <template>
   <div class="sidebar">
+    <div class="sidebar-gradient"></div>
     <div class="sidebar__header">
       <img src="~/assets/icons/logo.png" alt="logo" />
     </div>
@@ -49,12 +50,7 @@
         <li class="upload">
           <div class="icon">
             <router-link :to="{ name: 'jobs-manage' }">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 64 64"
-                width="512"
-                height="512"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="512" height="512">
                 <g
                   id="Upload_cloud_cloud_computing_storage_server"
                   data-name="Upload_cloud_cloud computing_storage_server"
@@ -80,12 +76,8 @@
                   <path
                     d="M45,29A13,13,0,1,0,32,42,13.012,13.012,0,0,0,45,29ZM29,39V28.14l-4.36,3.63A1,1,0,0,1,23,31V26a.981.981,0,0,1,.34-.75l8-7a1,1,0,0,1,1.32,0l8,7A.981.981,0,0,1,41,26v5a1,1,0,0,1-1.64.77L35,28.14V39a1,1,0,0,1-1,1H30A1,1,0,0,1,29,39Z"
                   />
-                  <path
-                    d="M7,56H3a1,1,0,0,1-1-1V42a1,1,0,0,1,1-1H7v2H4V54H7Z"
-                  />
-                  <path
-                    d="M61,56H57V54h3V43H57V41h4a1,1,0,0,1,1,1V55A1,1,0,0,1,61,56Z"
-                  />
+                  <path d="M7,56H3a1,1,0,0,1-1-1V42a1,1,0,0,1,1-1H7v2H4V54H7Z" />
+                  <path d="M61,56H57V54h3V43H57V41h4a1,1,0,0,1,1,1V55A1,1,0,0,1,61,56Z" />
                 </g>
               </svg>
             </router-link>

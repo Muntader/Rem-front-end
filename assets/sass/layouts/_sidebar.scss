@@ -1,6 +1,19 @@
 .sidebar {
+  display: block;
+  position: relative;
+  overflow: hidden;
   height: 100%;
   background-color: #197aff;
+  .sidebar-gradient {
+    position: absolute;
+    width: 469px;
+    height: 100%;
+    bottom: -100px;
+    transform: rotate(-147deg);
+    background: #093b80;
+    transform: translateY(39%) translateX(-50%) rotate(31deg);
+  }
+
   &__header {
     img {
       margin: auto;
@@ -20,7 +33,7 @@
 
       li.settings {
         svg {
-            width: 33px !important;
+          width: 33px !important;
         }
       }
 
@@ -31,21 +44,20 @@
           a {
             display: block;
             svg {
-                width: 38px;
-                height: auto;
+              width: 38px;
+              height: auto;
               margin-top: 30px;
               list-style: none;
-                  padding: 27px 7px;
+              padding: 27px 7px;
               display: block;
-    margin: auto;
+              margin: auto;
             }
           }
-          a.nuxt-link-exact-active  {
-            background-color: rgba($color: #FFFFFF, $alpha: 0.2)
+          a.nuxt-link-exact-active {
+            background-color: rgba($color: #ffffff, $alpha: 0.2);
           }
         }
       }
-
     }
   }
 }

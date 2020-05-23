@@ -1,0 +1,126 @@
+.form {
+  margin-bottom: 10px;
+  .form-input {
+    background-color: #fff;
+    font-size: 16px;
+    font-weight: 300;
+    width: 100%;
+    padding: 14px 12px;
+    letter-spacing: 0.1ch;
+    outline: none;
+    transition: 200ms;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: rgba(0, 0, 0, 0.35);
+    }
+
+    &:hover {
+      border: 1px solid rgb(25, 121, 252);
+    }
+  }
+
+  .upload {
+    border-radius: 3px;
+    padding: 20px;
+    ul {
+      padding: 18px;
+      font-size: 14px;
+      font-weight: 300;
+      td {
+        width: 100vh;
+      }
+      .text-center {
+        text-align: center;
+        h4 {
+          font-size: 24px;
+          font-weight: 300;
+          margin: 0;
+        }
+      }
+    }
+    label.btn {
+      margin-bottom: 0;
+      cursor: pointer;
+    }
+    .drop-active {
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      position: fixed;
+      z-index: 9999;
+      opacity: 0.6;
+      text-align: center;
+      background: #000;
+      h3 {
+        margin: -0.5em 0 0;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        -webkit-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+        transform: translaeY(-50%);
+        font-size: 40px;
+        color: #fff;
+        padding: 0;
+      }
+    }
+    .file-uploads {
+      display: block !important;
+      label {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .servers {
+    .flex {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      transition: 300ms;
+      &__item {
+        background-color: #fff;
+        margin-bottom: 10px;
+        cursor: pointer;
+        .content {
+          padding: 5px;
+          .icon {
+            display: inline-block;
+            height: 100%;
+            svg {
+              vertical-align: middle;
+            }
+          }
+
+          h4 {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 15px;
+            font-weight: 300;
+          }
+        }
+
+        &:hover {
+          background-color: $blueColor;
+          svg {
+            path {
+              fill: #fff !important;
+            }
+          }
+          h4 {
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+}
+
+.f-border {
+  border: 1px solid rgba(8, 59, 127, 0.25);
+  border-radius: 3px;
+}

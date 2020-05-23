@@ -1,0 +1,66 @@
+.app-table {
+  background-color: #fff;
+  box-shadow: 0 15px 17px -8px rgba(0, 0, 0, 0.08);
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+  }
+  th {
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.45);
+  }
+  td {
+    font-weight: 400;
+    font-size: 17px;
+  }
+  td,
+  th {
+    padding: 8px;
+    text-align: left;
+  }
+  td:last-child {
+    cursor: pointer;
+    svg {
+      width: 18px;
+    }
+  }
+}
+
+.app-table-pagination {
+  .pagination-section {
+    margin: 5rem 0;
+    display: flex;
+
+    justify-content: space-between;
+    .flex-2 {
+      display: flex;
+
+      .paginaiton-page {
+        margin: 3px 33px;
+      }
+
+      .pagination {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+
+        a {
+          text-decoration: none;
+          background: white;
+          color: #515151;
+          font-size: 14px;
+          padding: 0.75rem 1rem;
+          border: 1px solid #ededed;
+        }
+      }
+    }
+    p {
+      font-size: 14px;
+      font-weight: 700;
+      color: rgba(0, 0, 0, 0.43);
+    }
+  }
+}

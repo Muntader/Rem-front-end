@@ -1,5 +1,16 @@
-$blueColor: #2196f3;
+$blueColor: #197aff;
 
 button {
   outline: none;
+}
+
+.m-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.w-50 {
+  width: 49%;
+  max-width: 49%;
 }

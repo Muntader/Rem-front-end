@@ -1,5 +1,12 @@
 @import "base.scss";
 @import "components/dropdown";
+@import "components/table";
+@import "components/botton";
+@import "components/tooltip";
+@import "components/form";
+@import "pages/jobs/manage";
+@import "pages/jobs/create";
+@import url("https://fonts.googleapis.com/css2?family=Overpass:wght@100;200;400;600;900&display=swap");
 
 html,
 body {
@@ -7,7 +14,9 @@ body {
   padding: 0;
   margin: 0;
   font-size: 12px;
+  font-family: "Overpass", sans-serif;
   color: #070707;
+  background-color: rgba(67, 129, 213, 0.03);
 }
 
 .app {
@@ -24,6 +33,10 @@ body {
       margin: 31px 31px 65px 114px;
       &--header {
         @import "layouts/navbar";
+      }
+
+      &--content {
+        margin: 20px 0;
       }
     }
   }
