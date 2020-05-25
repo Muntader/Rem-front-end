@@ -15,7 +15,18 @@ export default {
         content: process.env.npm_package_description || ""
       }
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+      { rel: "stylesheet", href: "https://cdn.plyr.io/3.6.2/plyr.css" }
+    ],
+    script: [
+      {
+        src: "https://cdn.plyr.io/3.6.2/plyr.js"
+      },
+      {
+        src: "https://cdn.rawgit.com/video-dev/hls.js/18bb552/dist/hls.min.js"
+      }
+    ]
   },
   /*
    ** Customize the progress-bar color
@@ -24,11 +35,15 @@ export default {
   /*
    ** Global CSS
    */
-  css: ["@/assets/sass/main.scss"],
+  css: ["@/assets/sass/main.scss", "plyr/dist/plyr.css"],
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ["~/plugins/vue-tooltip.js", "~/plugins/vue-upload.js"],
+  plugins: [
+    "~/plugins/vue-tooltip.js",
+    "~/plugins/vue-upload.js",
+    "~/plugins/plyr.js"
+  ],
   /*
    ** Nuxt.js dev-modules
    */

@@ -18,22 +18,38 @@
       <div class="app-table">
         <table>
           <tr>
+            <th>ID</th>
             <th>Name</th>
             <th>Server</th>
             <th>Input</th>
-            <th>Output</th>
-            <th>Status</th>
             <th>Template</th>
+            <th>Storage</th>
+            <th>Status</th>
+            <th>Create at</th>
             <th></th>
           </tr>
           <tbody>
-            <tr>
+            <tr @click.prevent="ShowJobDetails(1)">
+              <td>1</td>
               <td>Teek</td>
               <td>OVH Ser1</td>
               <td>HleadOper-xa.mp4</td>
-              <td>https://www.youtube.com/watch?v=Ulq_jb7MhT0&list=PLX2b6NDJzqg2hLos2TRN_ua-rhrDXLiVr&index=31</td>
-              <td>Uploading</td>
               <td>HLS</td>
+              <td id="status">
+                <div class="st-upload">
+                  <div class="dot"></div>
+                  <span>Uploading</span>
+                </div>
+                <div class="st-transcoding">
+                  <div class="dot"></div>
+                  <span>Transcoding</span>
+                </div>
+                <div class="st-finish">
+                  <div class="dot"></div>
+                  <span>Finish</span>
+                </div>
+              </td>
+              <td>2020-7-1 20:10</td>
               <td>
                 <div class="app-table-more dropdown">
                   <div class="icon" @click="ActiveOptionsDropdown = 1">
@@ -72,6 +88,69 @@
                       </ul>
                     </div>
                   </transition>
+                </div>
+              </td>
+            </tr>
+            <tr v-show="ShowJob === 1" class="tr-job">
+              <td colspan="7">
+                <div class="job-details">
+                  <hr />
+                  <div class="flex">
+                    <div class="flex-1 w-50">
+                      <div class="plyr">
+                        <vue-plyr ref="plyr" :options="playerOptions" style="width: 100%;">
+                          <video id="player" data-plyr-config="{'autoplay': false}"></video>
+                        </vue-plyr>
+                      </div>
+                    </div>
+                    <div class="flex-2 w-50">
+                      <div class="details-list">
+                        <ul class="details-list__name">
+                          <li>ID</li>
+                          <li>Transcoding name</li>
+                          <li>File name</li>
+                          <li>Input path</li>
+                          <li>Output path</li>
+                          <li>Thumbnail path</li>
+                          <li>Storage</li>
+                          <li>Bucket</li>
+                          <li>Created at</li>
+                        </ul>
+                        <ul class="details-list__value">
+                          <li>1000</li>
+                          <li>GoogleVideo</li>
+                          <li>music.mp4</li>
+                          <li>/videos/storage/id/a.mp4</li>
+                          <li>
+                            <a
+                              href="https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
+                            >https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8</a>
+                          </li>
+                          <li>
+                            <a
+                              href="https://bitdash-a.akamaihd.net/content/sintel/hls/"
+                            >https://bitdash-a.akamaihd.net/content/sintel/hls/</a>
+                          </li>
+                          <li>AWS S3</li>
+                          <li>RTI_Videos</li>
+                          <li>2020-1-20 20:30pm</li>
+                        </ul>
+                      </div>
+                      <hr />
+                      <div class="details-list">
+                        <div class="details-list__name">
+                          <ul>
+                            <li>Logs</li>
+                          </ul>
+                        </div>
+                        <div class="details-list__value">
+                          <ul>
+                            <li id="error">Error Logs</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -153,11 +232,52 @@
 </template> 
 
 <script>
+import Hls from "hls.js";
 export default {
   data() {
     return {
-      ActiveOptionsDropdown: 0
+      ActiveOptionsDropdown: 0,
+      ShowJob: 0,
+      playerOptions: {
+        controls: [
+          "play-large",
+          "play",
+          "progress",
+          "current-time",
+          "mute",
+          "volume",
+          "settings",
+          "fullscreen"
+        ],
+        settings: ["quality", "speed", "loop"]
+      }
     };
+  },
+  created() {},
+  computed: {
+    player() {
+      console.log(this.$refs.plyr.player);
+      return this.$refs.plyr.player;
+    }
+  },
+  methods: {
+    ShowJobDetails(index) {
+      if (this.ShowJob !== index) {
+        this.ShowJob = 1;
+
+        if (Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(
+            "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
+          );
+          hls.attachMedia(this.player.media);
+
+          window.hls = hls;
+        } else {
+          console.log("hello");
+        }
+      }
+    }
   }
 };
 </script>

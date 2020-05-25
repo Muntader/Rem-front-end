@@ -11,8 +11,10 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "hls.js": "^0.13.2",
     "nuxt": "^2.0.0",
     "v-tooltip": "^2.0.3",
+    "vue-plyr": "^6.0.4",
     "vue-upload-component": "^2.8.20"
   },
   "devDependencies": {

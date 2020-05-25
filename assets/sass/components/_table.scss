@@ -6,25 +6,116 @@
     border-collapse: collapse;
     border-spacing: 0;
     width: 100%;
+    #status {
+      div {
+        color: #fff;
+        font-weight: bold;
+        font-size: 14px;
+        text-transform: uppercase;
+        border-radius: 50px;
+        display: inline-block;
+        padding: 3px 7px;
+        span {
+          padding: 0 2px;
+          border-radius: 50px;
+        }
+      }
+      .dot {
+        border-radius: 50%;
+        width: 11px;
+        height: 11px;
+        display: inline-table;
+      }
+      .st-upload {
+        background-color: #ffc107;
+        box-shadow: 0px 5px 20px -7px #ffc107;
+        .dot {
+          background-color: #daa300;
+        }
+      }
+      .st-transcoding {
+        background-color: #03a9f4;
+        box-shadow: 0px 5px 20px -7px #03a9f4;
+        .doit {
+          background-color: #0086c1;
+        }
+      }
+      .st-finish {
+        background-color: #8bc34a;
+        box-shadow: 0px 5px 20px -7px #8bc34a;
+        .dot {
+          background-color: #539a00;
+        }
+      }
+    }
+    th {
+      font-size: 15px;
+      font-weight: 600;
+      color: rgba(0, 0, 0, 0.45);
+    }
+    td {
+      font-weight: 400;
+      font-size: 17px;
+    }
+    td,
+    th {
+      padding: 8px;
+      text-align: left;
+    }
+    td:last-child {
+      cursor: pointer;
+      svg {
+        width: 18px;
+      }
+    }
+    tr {
+      transition: 200ms;
+      &:hover {
+        background-color: rgba(211, 230, 255, 0.5);
+        cursor: pointer;
+      }
+    }
   }
-  th {
-    font-size: 15px;
-    font-weight: 600;
-    color: rgba(0, 0, 0, 0.45);
+
+  // Job details when you click to td item
+  .tr-job {
+    &:hover {
+      background-color: unset !important;
+      cursor: none !important;
+    }
   }
-  td {
-    font-weight: 400;
-    font-size: 17px;
-  }
-  td,
-  th {
-    padding: 8px;
-    text-align: left;
-  }
-  td:last-child {
-    cursor: pointer;
-    svg {
-      width: 18px;
+  .job-details {
+    hr {
+      width: 95%;
+      border-top: 1px solid #ececec;
+    }
+    .flex-2 {
+      .details-list {
+        display: flex;
+        ul {
+          margin-top: 0;
+          list-style: none;
+
+          li:nth-child(1) {
+            margin-top: 0;
+          }
+        }
+        &__name {
+          li {
+            margin-top: 10px;
+            color: rgba(0, 26, 61, 0.6);
+          }
+        }
+        &__value {
+          li {
+            margin-top: 10px;
+            color: rgba(0, 26, 61, 1);
+          }
+          #error {
+            color: red;
+          }
+        }
+      }
     }
   }
 }

@@ -3,13 +3,49 @@
   cursor: pointer;
   font-size: 18px;
   padding: 12px 15px;
+
+  .ic-load {
+    display: block;
+    background-repeat: no-repeat;
+    background-size: 26px 19px;
+    width: 26px;
+    height: 19px;
+    animation: spin 2s linear infinite;
+  }
+  .ic-load-light {
+    background: url("~assets/icons/light-loading.svg");
+    background-repeat: no-repeat;
+    background-size: 26px 19px;
+  }
+  .ic-load-black {
+    background: url("~assets/icons/black-loading.svg");
+    background-repeat: no-repeat;
+    background-size: 26px 19px;
+  }
+  @keyframes spin {
+    0% {
+      transform: rotate(360deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
 }
 .btn-blue {
   color: #fff;
-  background-color: #1979fc;
+  background-color: $blueColor;
 }
 
 .btn-light {
   color: #070707;
   background-color: #fff;
+}
+
+.btn-blue:disabled,
+.btn-blue[disabled] {
+  background-color: #8bbcff;
+  color: #fff;
+  .ic-load {
+    display: inline-block !important;
+  }
 }

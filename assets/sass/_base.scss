@@ -10,6 +10,10 @@ button {
   margin-bottom: 25px;
 }
 
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+}
 .w-50 {
   width: 49%;
   max-width: 49%;

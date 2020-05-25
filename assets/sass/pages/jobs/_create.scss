@@ -12,7 +12,7 @@
           background: url("~assets/icons/back.svg");
           background-repeat: no-repeat;
           background-size: 26px 19px;
-          width: 26px;
+          width: 30px;
           height: 19px;
         }
       }
@@ -20,6 +20,13 @@
   }
 
   &__body {
-    // background-color: #fff;
+    background-color: #fff;
+    box-shadow: 0 15px 17px -8px rgba(0, 0, 0, 0.08);
+    .btn-upload {
+      margin-top: 30px;
+      button {
+        width: 100px;
+      }
+    }
   }
 }
