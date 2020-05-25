@@ -35,6 +35,7 @@
               <td>OVH Ser1</td>
               <td>HleadOper-xa.mp4</td>
               <td>HLS</td>
+              <td>S3</td>
               <td id="status">
                 <div class="st-upload">
                   <div class="dot"></div>
@@ -151,6 +152,13 @@
                       </div>
                     </div>
                   </div>
+                </div>
+              </td>
+            </tr>
+            <tr class="progress">
+              <td colspan="9">
+                <div class="progress-meter">
+                  <span class="upload" style="width: 25%"></span>
                 </div>
               </td>
             </tr>

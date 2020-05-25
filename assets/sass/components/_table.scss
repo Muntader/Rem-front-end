@@ -6,8 +6,11 @@
     border-collapse: collapse;
     border-spacing: 0;
     width: 100%;
+    // Status css
     #status {
-      div {
+      .st-upload,
+      .st-transcoding,
+      .st-finish {
         color: #fff;
         font-weight: bold;
         font-size: 14px;
@@ -19,12 +22,13 @@
           padding: 0 2px;
           border-radius: 50px;
         }
-      }
-      .dot {
-        border-radius: 50%;
-        width: 11px;
-        height: 11px;
-        display: inline-table;
+
+        .dot {
+          border-radius: 50%;
+          width: 11px;
+          height: 11px;
+          display: inline-table;
+        }
       }
       .st-upload {
         background-color: #ffc107;
@@ -75,6 +79,24 @@
         cursor: pointer;
       }
     }
+    tr.progress {
+      .progress-meter > span {
+        display: block;
+        height: 5px;
+        position: relative;
+        overflow: hidden;
+      }
+      .upload {
+        background-color: #ffc107;
+      }
+      .transcode {
+        background-color: #03a9f4;
+      }
+      td {
+        margin: 0;
+        padding: 0;
+      }
+    }
   }
 
   // Job details when you click to td item
@@ -111,7 +133,7 @@
             margin-top: 10px;
             color: rgba(0, 26, 61, 1);
           }
-          #error {
+          li#error {
             color: red;
           }
         }
