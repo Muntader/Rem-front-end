@@ -11,6 +11,7 @@
     width: 250px;
     right: 0;
     transition: all 0.3s;
+    z-index: 1;
     &:before {
       content: "";
       background-color: transparent;
@@ -51,9 +52,27 @@
         &:last-child {
           border-bottom: 1px solid transparent;
         }
+
+        .ic-load {
+          display: inline-block !important;
+          position: absolute;
+          right: 0;
+          top: 15px;
+        }
       }
     }
   }
+}
+
+.delete-icon {
+  display: inline-block;
+  background: url("~assets/icons/bin.svg");
+  background-size: 21px 16px;
+  width: 20px;
+  height: 16px;
+  position: relative;
+  top: 4px;
+  margin-right: 8px;
 }
 
 .dw-blue {

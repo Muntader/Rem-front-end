@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   mode: "universal",
   /*
    ** Headers of the page
@@ -42,7 +42,8 @@ export default {
   plugins: [
     "~/plugins/vue-tooltip.js",
     "~/plugins/vue-upload.js",
-    "~/plugins/plyr.js"
+    "~/plugins/plyr.js",
+    "~/plugins/vee-validate.js"
   ],
   /*
    ** Nuxt.js dev-modules
@@ -51,11 +52,21 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: [],
+  modules: ["@nuxtjs/axios", "@nuxtjs/toast"],
+
+  /*
+   ** Toast configuration
+   */
+  toast: {
+    position: "top-center"
+  },
+
   /*
    ** Build configuration
    */
   build: {
+    transpile: ["vee-validate/dist/rules"],
+
     /*
      ** You can extend webpack config here
      */

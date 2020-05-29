@@ -1,5 +1,27 @@
 .form {
   margin-bottom: 10px;
+
+  label {
+    width: 100%;
+    display: block;
+    font-size: 17px;
+    font-weight: 300;
+    margin-bottom: 5px;
+    .icon {
+      display: block;
+      background: url("~assets/icons/question.svg");
+      background-size: 21px 16px;
+      width: 20px;
+      height: 16px;
+      float: right;
+      margin-top: 6px;
+      cursor: pointer;
+    }
+  }
+  select {
+    height: 45px;
+  }
+
   .form-input {
     background-color: #fff;
     font-size: 16px;
