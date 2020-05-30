@@ -30,7 +30,7 @@
               <td>{{item.description}}</td>
               <td>
                 <div class="app-table-more dropdown">
-                  <div class="icon" @click="ActiveOptionsDropdown = 1">
+                  <div class="icon" @click="UpdateDropdown(index)">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -59,10 +59,30 @@
                     </svg>
                   </div>
                   <transition name="dropdown-ts">
-                    <div class="menu dw-light" v-show="ActiveOptionsDropdown === 1">
+                    <div class="menu dw-blue" v-show="ActiveOptionsDropdown === index">
                       <ul>
-                        <li class="item">Server 2</li>
-                        <li class="item">Server 2</li>
+                        <li class="item" @click="DeleteServer(item._id, index)">
+                          <a href="#">
+                            <span class="delete-icon"></span>
+                            Delete
+                            <span
+                              class="ic-load ic-load-light"
+                              v-if="DeleteButtonLoad === item._id"
+                            ></span>
+                          </a>
+                        </li>
+                        <li class="item">
+                          <router-link
+                            :to="{name: 'settings-servers-update-id', params: {id: item._id}}"
+                          >
+                            <span class="edit-icon"></span>
+                            Edit
+                            <span
+                              class="ic-load ic-load-light"
+                              v-if="DeleteButtonLoad === item._id"
+                            ></span>
+                          </router-link>
+                        </li>
                       </ul>
                     </div>
                   </transition>
@@ -82,7 +102,8 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-      ActiveOptionsDropdown: 0,
+      ActiveOptionsDropdown: null,
+      DeleteButtonLoad: 0,
       ShowJob: 0
     };
   },
@@ -99,6 +120,24 @@ export default {
       if (this.ShowJob !== index) {
         this.ShowJob = 1;
       }
+    },
+
+    UpdateDropdown(index) {
+      if (this.ActiveOptionsDropdown == index) {
+        this.ActiveOptionsDropdown = null;
+        return;
+      }
+      this.ActiveOptionsDropdown = index;
+    },
+
+    async DeleteServer(id, index) {
+      this.DeleteButtonLoad = id;
+      await this.$store.dispatch("DELETE_TEMPLATE", {
+        ID: id,
+        INDEX: index
+      });
+
+      this.DeleteButtonLoad = null;
     }
   }
 };

@@ -7,7 +7,7 @@ export const mutations = {
     state.Loading = true;
   },
 
-  SPINER_CLEAN(state) {
-    state.Loading = false;
+  DELETE_TEMPLATE_ITEM(state, index) {
+    state.TemplateList.splice(index, 1);
   }
 };

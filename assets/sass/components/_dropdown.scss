@@ -29,11 +29,17 @@
       list-style: none;
       li {
         border-left: 1px solid transparent;
-        padding: 12px 0;
         cursor: pointer;
         display: block;
         border-bottom: 1px solid rgba($color: #fff, $alpha: 0.5);
         position: relative;
+        a {
+          padding: 12px 0;
+          display: block;
+          color: #fff;
+          text-decoration: none;
+        }
+
         &:before {
           content: "";
           position: absolute;
@@ -67,6 +73,17 @@
 .delete-icon {
   display: inline-block;
   background: url("~assets/icons/bin.svg");
+  background-size: 21px 16px;
+  width: 20px;
+  height: 16px;
+  position: relative;
+  top: 4px;
+  margin-right: 8px;
+}
+
+.edit-icon {
+  display: inline-block;
+  background: url("~assets/icons/edit.svg");
   background-size: 21px 16px;
   width: 20px;
   height: 16px;

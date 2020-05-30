@@ -3,6 +3,10 @@ export const mutations = {
     state.ServerList = data;
   },
 
+  SET_SERVER_EDIT(state, data) {
+    state.ServerEdit = data;
+  },
+
   SPINER_LOAD(state, s) {
     state.Loading = s;
   },

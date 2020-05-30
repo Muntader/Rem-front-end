@@ -64,12 +64,26 @@
                     <div class="menu dw-blue" v-show="ActiveOptionsDropdown === index">
                       <ul>
                         <li class="item" @click="DeleteServer(item._id, index)">
-                          <span class="delete-icon"></span>
-                          Delete
-                          <span
-                            class="ic-load ic-load-light"
-                            v-if="DeleteButtonLoad === item._id"
-                          ></span>
+                          <a href="#">
+                            <span class="delete-icon"></span>
+                            Delete
+                            <span
+                              class="ic-load ic-load-light"
+                              v-if="DeleteButtonLoad === item._id"
+                            ></span>
+                          </a>
+                        </li>
+                        <li class="item">
+                          <router-link
+                            :to="{name: 'settings-servers-update-id', params: {id: item._id}}"
+                          >
+                            <span class="edit-icon"></span>
+                            Edit
+                            <span
+                              class="ic-load ic-load-light"
+                              v-if="DeleteButtonLoad === item._id"
+                            ></span>
+                          </router-link>
                         </li>
                       </ul>
                     </div>
@@ -104,8 +118,6 @@ export default {
     await store.dispatch("GET_SERVER_LIST");
   },
 
-  created() {},
-
   methods: {
     ShowJobDetails(index) {
       if (this.ShowJob !== index) {
@@ -123,7 +135,7 @@ export default {
 
     async DeleteServer(id, index) {
       this.DeleteButtonLoad = id;
-      await this.$store.dispatch("DELETE_SERVER", {
+      await this.$store.dispatch("DELETE_TEMPLATE", {
         ID: id,
         INDEX: index
       });
