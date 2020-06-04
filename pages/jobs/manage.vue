@@ -19,41 +19,43 @@
         <table>
           <tr>
             <th>ID</th>
-            <th>Name</th>
-            <th>Server</th>
+            <th>Job Name</th>
             <th>Input</th>
-            <th>Template</th>
+            <th>Template ID</th>
             <th>Storage</th>
             <th>Status</th>
             <th>Create at</th>
             <th></th>
           </tr>
-          <tbody>
-            <tr @click.prevent="ShowJobDetails(1)">
-              <td>1</td>
-              <td>Teek</td>
-              <td>OVH Ser1</td>
-              <td>HleadOper-xa.mp4</td>
-              <td>HLS</td>
-              <td>S3</td>
+          <tbody
+            v-for="(item, index) in JList.records"
+            :key="index"
+            @click.prevent="ShowJobDetails(item.ID)"
+          >
+            <tr>
+              <td>{{item.ID}}</td>
+              <td>{{item.name}}</td>
+              <td>{{item.file_name}}</td>
+              <td>{{item.template_id}}</td>
+              <td>{{item.storage}}</td>
               <td id="status">
-                <div class="st-upload">
+                <div class="st-upload" v-if="item.status === 'Uploading'">
                   <div class="dot"></div>
                   <span>Uploading</span>
                 </div>
-                <div class="st-transcoding">
+                <div class="st-transcoding" v-if="item.status === 'Transcoding' ">
                   <div class="dot"></div>
                   <span>Transcoding</span>
                 </div>
-                <div class="st-finish">
+                <div class="st-finish" v-if="item.status === 'Finish' ">
                   <div class="dot"></div>
                   <span>Finish</span>
                 </div>
               </td>
-              <td>2020-7-1 20:10</td>
+              <td>{{item.CreatedAt}}</td>
               <td>
                 <div class="app-table-more dropdown">
-                  <div class="icon" @click="ActiveOptionsDropdown = 1">
+                  <div class="icon" @click="ActiveOptionsDropdown = item.ID">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -82,17 +84,17 @@
                     </svg>
                   </div>
                   <transition name="dropdown-ts">
-                    <div class="menu dw-light" v-show="ActiveOptionsDropdown === 1">
+                    <div class="menu dw-light" v-show="ActiveOptionsDropdown === item.ID">
                       <ul>
-                        <li class="item">Server 2</li>
-                        <li class="item">Server 2</li>
+                        <li class="item">Delete</li>
                       </ul>
                     </div>
                   </transition>
                 </div>
               </td>
             </tr>
-            <tr v-show="ShowJob === 1" class="tr-job">
+
+            <tr v-show="ShowJob === item.ID" class="tr-job">
               <td colspan="7">
                 <div class="job-details">
                   <hr />
@@ -100,7 +102,7 @@
                     <div class="flex-1 w-50">
                       <div class="plyr">
                         <vue-plyr ref="plyr" :options="playerOptions" style="width: 100%;">
-                          <video id="player" data-plyr-config="{'autoplay': false}"></video>
+                          <video :id="item.ID" data-plyr-config="{'autoplay': false}"></video>
                         </vue-plyr>
                       </div>
                     </div>
@@ -110,7 +112,6 @@
                           <li>ID</li>
                           <li>Transcoding name</li>
                           <li>File name</li>
-                          <li>Input path</li>
                           <li>Output path</li>
                           <li>Thumbnail path</li>
                           <li>Storage</li>
@@ -118,10 +119,9 @@
                           <li>Created at</li>
                         </ul>
                         <ul class="details-list__value">
-                          <li>1000</li>
-                          <li>GoogleVideo</li>
-                          <li>music.mp4</li>
-                          <li>/videos/storage/id/a.mp4</li>
+                          <li>{{item.ID}}</li>
+                          <li>{{item.name}}</li>
+                          <li>{{item.file_name}}</li>
                           <li>
                             <a
                               href="https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
@@ -132,9 +132,11 @@
                               href="https://bitdash-a.akamaihd.net/content/sintel/hls/"
                             >https://bitdash-a.akamaihd.net/content/sintel/hls/</a>
                           </li>
-                          <li>AWS S3</li>
-                          <li>RTI_Videos</li>
-                          <li>2020-1-20 20:30pm</li>
+                          <li v-if="item.Storage === 's3' ">AWS S3</li>
+                          <li v-else>Local</li>
+                          <li v-if="item.Storage === 's3' ">{{item.bucket}}</li>
+                          <li v-else>None</li>
+                          <li>{{item.CreatedAt}}</li>
                         </ul>
                       </div>
                       <hr />
@@ -146,7 +148,7 @@
                         </div>
                         <div class="details-list__value">
                           <ul>
-                            <li id="error">Error Logs</li>
+                            <li id="error">{{item.logs}}</li>
                           </ul>
                         </div>
                       </div>
@@ -156,9 +158,25 @@
               </td>
             </tr>
             <tr class="progress">
-              <td colspan="9">
+              <td
+                colspan="9"
+                v-for="(pitem, pindex) in UList"
+                :key="pindex"
+                v-if="pitem.filename === item.file_name && pitem.progress < 98"
+              >
                 <div class="progress-meter">
-                  <span class="upload" style="width: 25%"></span>
+                  <span class="upload" :style="{ 'width': pitem.progress + '%'}"></span>
+                </div>
+              </td>
+
+              <td colspan="9">
+                <div
+                  class="progress-meter"
+                  v-for="(progress_item, progress_index) in ProgressList"
+                  :key="progress_index"
+                  v-if="progress_item.ID === item.ID"
+                >
+                  <span class="transcode" :style="{ 'width': progress_item.Progress + '%'}"></span>
                 </div>
               </td>
             </tr>
@@ -240,7 +258,9 @@
 </template> 
 
 <script>
+var _self = this;
 import Hls from "hls.js";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -258,21 +278,52 @@ export default {
           "fullscreen"
         ],
         settings: ["quality", "speed", "loop"]
-      }
+      },
+      wsconneciton: null
     };
   },
-  created() {},
   computed: {
+    ...mapState({
+      JList: state => state.jobs.JobsList,
+      UList: state => state.jobs.UploadList,
+      ProgressList: state => state.jobs.TranscodingProgressList
+    }),
     player() {
-      console.log(this.$refs.plyr.player);
+      console.log(this.$refs);
       return this.$refs.plyr.player;
     }
   },
-  methods: {
-    ShowJobDetails(index) {
-      if (this.ShowJob !== index) {
-        this.ShowJob = 1;
 
+  mounted() {
+    // Create WebSocket connection.
+    this.wsconneciton = new WebSocket("ws://localhost:8080/v1/ws/progress");
+
+    this.wsconneciton.onopen = function() {
+      console.log("connected");
+    };
+
+    this.wsconneciton.onclose = function(e) {
+      console.log("connection closed (" + e.code + ")");
+    };
+
+    this.wsconneciton.onmessage = e => {
+      console.log("message received: " + e.data);
+      // deserialize json data
+      var json = JSON.parse(e.data);
+      this.$store.commit("SET_TRANSCODING_PROGRESS_LIST", json);
+    };
+  },
+
+  async fetch({ $axios, params, store }) {
+    await store.dispatch("GET_JOBS_LIST");
+  },
+
+  methods: {
+    ShowJobDetails(id) {
+      if (this.ShowJob !== id) {
+        this.ShowJob = id;
+        console.log(this.player);
+        return;
         if (Hls.isSupported()) {
           const hls = new Hls();
           hls.loadSource(

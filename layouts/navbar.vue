@@ -12,8 +12,9 @@
         <transition name="dropdown-ts">
           <div class="menu dw-blue" v-show="ActiveLeftDropdown">
             <ul>
-              <li class="item">Server 2</li>
-              <li class="item">Server 2</li>
+              <li class="item" v-for="(item, index) in SList" :key="index">
+                <a href="#">{{item.name}}</a>
+              </li>
             </ul>
           </div>
         </transition>
@@ -41,12 +42,18 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   data() {
     return {
       ActiveLeftDropdown: false,
       ActiveRightDropdown: false
     };
-  }
+  },
+
+  computed: mapState({
+    SList: state => state.servers.ServerList
+  })
 };
 </script>

@@ -16,7 +16,7 @@
         font-size: 14px;
         text-transform: uppercase;
         border-radius: 50px;
-        display: inline-block;
+        display: inline-flex;
         padding: 3px 7px;
         span {
           padding: 0 2px;
@@ -27,7 +27,9 @@
           border-radius: 50%;
           width: 11px;
           height: 11px;
-          display: inline-table;
+          position: relative;
+          top: 6px;
+          margin: 0 6px 0 0;
         }
       }
       .st-upload {
@@ -40,7 +42,7 @@
       .st-transcoding {
         background-color: #03a9f4;
         box-shadow: 0px 5px 20px -7px #03a9f4;
-        .doit {
+        .dot {
           background-color: #0086c1;
         }
       }

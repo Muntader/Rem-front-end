@@ -42,6 +42,13 @@
     }
   }
 
+  .input-vaild-error {
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.1ch;
+    color: #ff5722;
+  }
+
   .upload {
     background-color: #fff;
     border-radius: 3px;
@@ -126,17 +133,18 @@
             font-weight: 300;
           }
         }
+      }
 
-        &:hover {
-          background-color: $blueColor;
-          svg {
-            path {
-              fill: #fff !important;
-            }
+      &__item:hover,
+      .active {
+        background-color: $blueColor;
+        svg {
+          path {
+            fill: #fff !important;
           }
-          h4 {
-            color: #fff;
-          }
+        }
+        h4 {
+          color: #fff;
         }
       }
     }

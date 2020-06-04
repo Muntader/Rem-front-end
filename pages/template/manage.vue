@@ -71,18 +71,6 @@
                             ></span>
                           </a>
                         </li>
-                        <li class="item">
-                          <router-link
-                            :to="{name: 'settings-servers-update-id', params: {id: item._id}}"
-                          >
-                            <span class="edit-icon"></span>
-                            Edit
-                            <span
-                              class="ic-load ic-load-light"
-                              v-if="DeleteButtonLoad === item._id"
-                            ></span>
-                          </router-link>
-                        </li>
                       </ul>
                     </div>
                   </transition>

@@ -1,4 +1,3 @@
-// person.js
 "use strict";
 
 // connect database

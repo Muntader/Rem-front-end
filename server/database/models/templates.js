@@ -12,7 +12,7 @@ module.exports = class templates {
   constructor(name, description, template) {
     this.name = name;
     this.description = description;
-    this.temmplate = template;
+    this.template = template;
   }
 
   insert() {

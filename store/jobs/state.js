@@ -1,8 +1,10 @@
 export const state = () => ({
-  ServerList: [],
-  ServerEdit: null,
-  Loading: false,
-
+  JobsList: {
+    total_record: 0,
+    record: []
+  },
+  UploadList: [],
+  TranscodingProgressList: [],
   ServerActive: {
     domain: null,
     key: null,

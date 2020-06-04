@@ -28,6 +28,10 @@ export default {
   components: {
     sidebar,
     navbar
+  },
+
+  created() {
+    this.$store.commit("SET_DEFAULT_SERVER_TO_STORAGE");
   }
 };
 </script>

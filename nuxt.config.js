@@ -43,7 +43,8 @@ module.exports = {
     "~/plugins/vue-tooltip.js",
     "~/plugins/vue-upload.js",
     "~/plugins/plyr.js",
-    "~/plugins/vee-validate.js"
+    "~/plugins/vee-validate.js",
+    "~/plugins/storage-plug.js"
   ],
   /*
    ** Nuxt.js dev-modules

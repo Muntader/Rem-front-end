@@ -85,7 +85,7 @@ export default {
   methods: {
     async CreateServer() {
       this.ButtonLoad = true;
-      await this.$store.dispatch("CREATE_SERVER", {
+      await this.$store.dispatch("CREATE_Te", {
         Name: this.Name,
         ApiKey: this.ApiKey,
         Domain: this.Domain

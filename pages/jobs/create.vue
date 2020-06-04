@@ -10,10 +10,34 @@
     <div class="app-create-jobs__body">
       <div class="w-50">
         <div class="form">
-          <input type="text" class="f-border form-input" placeholder="Add text here " />
+          <label for="t-storage">Name</label>
+          <input
+            type="text"
+            class="f-border form-input"
+            placeholder="Name of upload"
+            v-model="Name"
+          />
         </div>
 
+        <!-- .form -->
         <div class="form">
+          <label for="t-description">Description</label>
+          <textarea
+            v-model="Description"
+            name="t-description"
+            class="f-border form-input"
+            cols="10"
+            rows="5"
+            placeholder="Description of upload"
+          ></textarea>
+        </div>
+        <!-- /.form -->
+
+        <div class="form">
+          <label for="t-description">
+            Videos files
+            <div class="icon" v-tooltip.right-start="'Able to drag and drop files'"></div>
+          </label>
           <client-only>
             <div class="upload f-border">
               <ul v-if="files.length">
@@ -53,11 +77,24 @@
           </client-only>
         </div>
 
-        <!-- .form -->
+        <!-- .form server -->
         <div class="form">
+          <label>
+            Choose server
+            <div
+              class="icon"
+              v-tooltip.right-start="'You can choose a server, by default we will divine videos to each server even if the servers are occupied the videos will be in queue after upload'"
+            ></div>
+          </label>
           <div class="servers">
             <div class="flex">
-              <div class="flex__item f-border w-50">
+              <div
+                class="flex__item f-border w-50"
+                v-for="(item, index) in SList"
+                :key="index"
+                :class="{'active': SelectServer === index}"
+                @click="SelectServer = index"
+              >
                 <div class="content">
                   <div class="icon">
                     <svg
@@ -88,18 +125,68 @@
                       </g>
                     </svg>
                   </div>
-                  <h4>Server name</h4>
+                  <h4>{{item.name}}</h4>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <!-- /.form -->
+        <!-- /.form server-->
+
+        <!-- .form templates -->
+        <div class="form">
+          <label>Choose template</label>
+          <div class="servers">
+            <div class="flex">
+              <div
+                class="flex__item f-border w-50"
+                v-for="(item, index) in TList"
+                :key="index"
+                :class="{'active': SelectTemplate === index}"
+                @click="SelectTemplate = index"
+              >
+                <div class="content">
+                  <div class="icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      id="bold"
+                      enable-background="new 0 0 32 32"
+                      viewBox="0 0 32 32"
+                      width="55px"
+                      class
+                    >
+                      <g>
+                        <path
+                          d="m21.667 19.333h-11.334c-1.286 0-2.333 1.047-2.333 2.334s1.047 2.333 2.333 2.333h11.333c1.287 0 2.334-1.047 2.334-2.333s-1.047-2.334-2.333-2.334zm-11.334 3.334c-.552 0-1-.448-1-1s.448-1 1-1 1 .448 1 1-.447 1-1 1zm3.334 0c-.552 0-1-.448-1-1s.448-1 1-1 1 .448 1 1-.448 1-1 1z"
+                          fill="#fd907e"
+                          data-original="#FD907E"
+                          class="dis"
+                          style="fill:#1273EB"
+                          data-old_color="#fd907e"
+                        />
+                        <path
+                          d="m10.333 18h11.333c.67 0 1.297.184 1.838.499l-1.337-8.941c-.138-.903-.901-1.558-1.814-1.558h-8.706c-.913 0-1.676.655-1.814 1.56l-1.337 8.939c.54-.315 1.167-.499 1.837-.499z"
+                          fill="#fc573b"
+                          data-original="#FC573B"
+                          class="disk"
+                          style="fill:#1273EB"
+                          data-old_color="#fc573b"
+                        />
+                      </g>
+                    </svg>
+                  </div>
+                  <h4>{{item.name}}</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /.form server-->
 
         <!-- .form -->
         <div class="form btn-upload">
-          <button class="btn btn-blue">Upload</button>
-          <button class="btn btn-blue" disabled>
+          <button class="btn btn-blue" v-if="!ButtonLoad" @click="UploadVideos()">Upload</button>
+          <button class="btn btn-blue" disabled v-else>
             <i class="ic-load ic-load-light"></i>
           </button>
         </div>
@@ -110,14 +197,92 @@
 </template>
 <script>
 import FileUpload from "vue-upload-component";
+import { mapState } from "vuex";
 export default {
   components: {
     FileUpload
   },
   data() {
     return {
+      Name: "",
+      Description: "",
+      SelectServer: null,
+      SelectTemplate: null,
+      ButtonLoad: false,
       files: []
     };
+  },
+
+  computed: mapState({
+    SList: state => state.servers.ServerList,
+    TList: state => state.templates.TemplateList,
+    UList: state => state.jobs.UploadList
+  }),
+
+  async fetch({ $axios, params, store }) {
+    await store.dispatch("GET_SERVER_LIST");
+    await store.dispatch("GET_TEMPLATES_LIST");
+  },
+
+  methods: {
+    UploadVideos() {
+      let progressData = [];
+      let uid = Math.floor(Math.random() * 9999999);
+      let data = new FormData();
+      this.files.forEach(file => {
+        data.append("files", file.file, file.name);
+        this.$store.commit("SET_UPLOAD_LIST", {
+          filename: file.name,
+          progress: null,
+          uid: uid
+        });
+      });
+
+      data.append(
+        "template",
+        JSON.stringify(this.TList[this.SelectTemplate].template)
+      );
+
+      data.append("name", this.Name);
+      data.append("template_id", this.TList[this.SelectTemplate]._id);
+      data.append("description", this.Description);
+
+      // Upload progress
+      const config = {
+        onUploadProgress: progressEvent => {
+          var percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+
+          this.$store.commit("UPDATE_UPLOAD_LIST", {
+            uid: uid,
+            progress: percentCompleted
+          });
+        },
+        headers: {
+          Authorization: "123",
+          "Content-Type": "multipart/form-data"
+        }
+      };
+
+      this.$axios
+        .post("http://localhost:8080/api/v1/upload", data, config)
+        .then(res => {
+          this.$store.commit("DELETE_UPLOAD_LIST", {
+            uid: uid
+          });
+          console.log("Success Upload");
+        })
+        .catch(err => {
+          this.$store.commit("DELETE_UPLOAD_LIST", {
+            uid: uid
+          });
+        });
+
+      setTimeout(() => {
+        this.$router.push({ name: "jobs-manage" });
+      }, 2000);
+    }
   }
 };
 </script>
