@@ -52,6 +52,17 @@
           </ValidationProvider>
         </div>
 
+        <div class="form">
+          <label for="t-api">Cloud/Cache Domain</label>
+          <input
+            v-model="CloudDomain"
+            name="t-api"
+            type="text"
+            class="f-border form-input"
+            placeholder="Cloud/Cache Domain URL"
+          />
+        </div>
+
         <!-- .form -->
         <div class="form btn-upload">
           <button class="btn btn-blue" @click="CreateServer" v-if="!ButtonLoad">Upload</button>
@@ -74,6 +85,7 @@ export default {
       Name: "",
       ApiKey: "",
       Domain: "",
+      CloudDomain: "",
       ButtonLoad: false
     };
   },
@@ -85,10 +97,11 @@ export default {
   methods: {
     async CreateServer() {
       this.ButtonLoad = true;
-      await this.$store.dispatch("CREATE_Te", {
+      await this.$store.dispatch("CREATE_SERVER", {
         Name: this.Name,
         ApiKey: this.ApiKey,
-        Domain: this.Domain
+        Domain: this.Domain,
+        CloudDomain: this.CloudDomain
       });
 
       this.ButtonLoad = false;

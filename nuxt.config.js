@@ -15,16 +15,10 @@ module.exports = {
         content: process.env.npm_package_description || ""
       }
     ],
-    link: [
-      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-      { rel: "stylesheet", href: "https://cdn.plyr.io/3.6.2/plyr.css" }
-    ],
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
     script: [
       {
-        src: "https://cdn.plyr.io/3.6.2/plyr.js"
-      },
-      {
-        src: "https://cdn.rawgit.com/video-dev/hls.js/18bb552/dist/hls.min.js"
+        src: "https://cdn.jwplayer.com/libraries/RS5IBWBT.js"
       }
     ]
   },
@@ -44,7 +38,7 @@ module.exports = {
     "~/plugins/vue-upload.js",
     "~/plugins/plyr.js",
     "~/plugins/vee-validate.js",
-    "~/plugins/storage-plug.js"
+    { src: "~/plugins/storage-plug.js", ssr: true }
   ],
   /*
    ** Nuxt.js dev-modules
@@ -53,7 +47,12 @@ module.exports = {
   /*
    ** Nuxt.js modules
    */
-  modules: ["@nuxtjs/axios", "@nuxtjs/toast"],
+  modules: [
+    "cookie-universal-nuxt",
+    "nuxt-clipboard2",
+    "@nuxtjs/axios",
+    "@nuxtjs/toast"
+  ],
 
   /*
    ** Toast configuration

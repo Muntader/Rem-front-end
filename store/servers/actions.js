@@ -8,12 +8,12 @@ export const actions = {
    * @param {*} commit object
    * @param {*} id cast id
    */
-  async GET_SERVER_LIST({ commit }, id) {
+  async GET_SERVER_LIST({ commit }) {
     // Start spinner load
     commit("SPINER_LOAD", true);
 
     // Send request
-    await this.$axios.get("http://localhost:3000/api/servers").then(
+    await this.$nodeServerApi.get("/api/servers").then(
       response => {
         if (response.status === 200) {
           commit("SET_SERVER_LIST", response.data.data);
@@ -30,13 +30,20 @@ export const actions = {
     );
   },
 
-  async CREATE_SERVER({ commit }, { Name, ApiKey, Domain }) {
-    // Send request
-    await this.$axios
-      .post("http://localhost:3000/api/servers/create", {
+  async CREATE_SERVER({}, { Name, ApiKey, Domain, CloudDomain }) {
+    // Send reques
+    console.log({
+      name: Name,
+      api_key: ApiKey,
+      domain: Domain,
+      cloud_domain: CloudDomain
+    });
+    await this.$nodeServerApi
+      .post("/api/servers/create", {
         name: Name,
         api_key: ApiKey,
-        domain: Domain
+        domain: Domain,
+        cloud_domain: CloudDomain
       })
       .then(
         response => {
@@ -64,7 +71,7 @@ export const actions = {
 
   async GET_SERVER_EDIT({ commit }, ID) {
     commit("SPINER_LOAD", true);
-    await this.$axios.get("http://localhost:3000/api/servers/edit/" + ID).then(
+    await this.$nodeServerApi.get("/api/servers/edit/" + ID).then(
       response => {
         if (response.status === 200) {
           commit("SET_SERVER_EDIT", response.data.data);
@@ -81,14 +88,15 @@ export const actions = {
     );
   },
 
-  async UPDATE_SERVER({ commit }, { ID, Name, ApiKey, Domain }) {
+  async UPDATE_SERVER({ ID, Name, ApiKey, Domain, CloudDomain }) {
     // Send request
-    await this.$axios
-      .post("http://localhost:3000/api/servers/update", {
+    await this.$nodeServerApi
+      .post("/api/servers/update", {
         id: ID,
         name: Name,
         api_key: ApiKey,
-        domain: Domain
+        domain: Domain,
+        cloud_domain: CloudDomain
       })
       .then(
         response => {
@@ -114,31 +122,29 @@ export const actions = {
       );
   },
 
-  async DELETE_SERVER({ commit, state }, { ID, INDEX }) {
+  async DELETE_SERVER({ commit }, { ID, INDEX }) {
     // Send request
-    await this.$axios
-      .delete("http://localhost:3000/api/servers/delete/" + ID)
-      .then(
-        response => {
-          if (response.status === 200) {
-            this.$toast.success(response.data.message, {
-              position: "top-right",
-              duration: 2000
-            });
+    await this.$nodeServerApi.delete("/apai/servers/delete/" + ID).then(
+      response => {
+        if (response.status === 200) {
+          this.$toast.success(response.data.message, {
+            position: "top-right",
+            duration: 2000
+          });
 
-            commit("DELETE_SERVER_ITEM", INDEX);
-          }
-        },
-        error => {
-          if (error.response.status === 404) {
-            this.$router.push({ name: "404" });
-          } else {
-            this.$toast.error(error.response.data.message, {
-              position: "top-right",
-              duration: 2000
-            });
-          }
+          commit("DELETE_SERVER_ITEM", INDEX);
         }
-      );
+      },
+      error => {
+        if (error.response.status === 404) {
+          this.$router.push({ name: "404" });
+        } else {
+          this.$toast.error(error.response.data.message, {
+            position: "top-right",
+            duration: 2000
+          });
+        }
+      }
+    );
   }
 };

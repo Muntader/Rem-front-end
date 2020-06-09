@@ -21,7 +21,8 @@
             <th>ID</th>
             <th>Name</th>
             <th>API Key</th>
-            <th>Domain</th>
+            <th>Server Domain</th>
+            <th>Cloud Domain</th>
             <th></th>
           </tr>
           <tbody>
@@ -30,6 +31,7 @@
               <td>{{item.name}}</td>
               <td>{{item.api_key}}</td>
               <td>{{item.domain}}</td>
+              <td>{{item.cloud_domain}}</td>
               <td>
                 <div class="app-table-more dropdown">
                   <div class="icon" @click="UpdateDropdown(index)">

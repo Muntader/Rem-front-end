@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <div class="app-jobs-manage__body">
+    <div class="app-jobs-manage__body" v-if="!RequestLoad">
       <div class="app-table">
         <table>
           <tr>
@@ -30,7 +30,7 @@
           <tbody
             v-for="(item, index) in JList.records"
             :key="index"
-            @click.prevent="ShowJobDetails(item.ID)"
+            @click.prevent="ShowJobDetails(item)"
           >
             <tr>
               <td>{{item.ID}}</td>
@@ -47,6 +47,11 @@
                   <div class="dot"></div>
                   <span>Transcoding</span>
                 </div>
+
+                <div class="st-upload-s3" v-if="item.status === 'Upload-to-s3' ">
+                  <div class="dot"></div>
+                  <span>Upload To S3</span>
+                </div>
                 <div class="st-finish" v-if="item.status === 'Finish' ">
                   <div class="dot"></div>
                   <span>Finish</span>
@@ -54,8 +59,40 @@
               </td>
               <td>{{item.CreatedAt}}</td>
               <td>
+                <div
+                  class="app-table-more copy-link"
+                  @click.prevent="copySomething($cookies.get('server-url') + '/storage/' + item.upload_id + '/HLS/master.m3u8')"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    id="_x31_"
+                    enable-background="new 0 0 24 24"
+                    width="12px"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="m20.5 24h-12c-1.378 0-2.5-1.121-2.5-2.5v-15c0-1.379 1.122-2.5 2.5-2.5h12c1.378 0 2.5 1.121 2.5 2.5v15c0 1.379-1.122 2.5-2.5 2.5zm-12-19c-.827 0-1.5.673-1.5 1.5v15c0 .827.673 1.5 1.5 1.5h12c.827 0 1.5-.673 1.5-1.5v-15c0-.827-.673-1.5-1.5-1.5z"
+                    />
+                    <path
+                      d="m4.5 21h-1c-1.378 0-2.5-1.121-2.5-2.5v-16c0-1.379 1.122-2.5 2.5-2.5h12c1.378 0 2.5 1.121 2.5 2.5 0 .276-.224.5-.5.5s-.5-.224-.5-.5c0-.827-.673-1.5-1.5-1.5h-12c-.827 0-1.5.673-1.5 1.5v16c0 .827.673 1.5 1.5 1.5h1c.276 0 .5.224.5.5s-.224.5-.5.5z"
+                    />
+                    <path
+                      d="m18.5 17h-8c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h8c.276 0 .5.224.5.5s-.224.5-.5.5z"
+                    />
+                    <path
+                      d="m18.5 21h-8c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h8c.276 0 .5.224.5.5s-.224.5-.5.5z"
+                    />
+                    <path
+                      d="m18.5 13h-8c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h8c.276 0 .5.224.5.5s-.224.5-.5.5z"
+                    />
+                    <path
+                      d="m18.5 9h-8c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h8c.276 0 .5.224.5.5s-.224.5-.5.5z"
+                    />
+                  </svg>
+                </div>
+
                 <div class="app-table-more dropdown">
-                  <div class="icon" @click="ActiveOptionsDropdown = item.ID">
+                  <div class="icon" @click.prevent="ActiveOptionsDropdown = item.ID">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -94,16 +131,39 @@
               </td>
             </tr>
 
-            <tr v-show="ShowJob === item.ID" class="tr-job">
+            <tr v-if="ShowJob === item.ID" class="tr-job">
               <td colspan="7">
                 <div class="job-details">
                   <hr />
                   <div class="flex">
                     <div class="flex-1 w-50">
-                      <div class="plyr">
-                        <vue-plyr ref="plyr" :options="playerOptions" style="width: 100%;">
-                          <video :id="item.ID" data-plyr-config="{'autoplay': false}"></video>
-                        </vue-plyr>
+                      <div class="playr">
+                        <div id="jwplayer"></div>
+                      </div>
+                      <hr />
+
+                      <div class="thumbnail">
+                        <div
+                          class="d-img"
+                          v-for="(num, index) in 10"
+                          :key="index"
+                          v-if="item.storage === 's3'"
+                        >
+                          <img
+                            :src="'https://'+item.bucket.String + '.s3.' + item.region.String  + '.amazonaws.com/' + item.upload_id +'/thumbnail/out-img-00'+ num +'.jpg'"
+                          />
+                        </div>
+
+                        <div
+                          class="d-img"
+                          v-for="(num, index) in 6"
+                          :key="index"
+                          v-if="item.storage === 'local'"
+                        >
+                          <img
+                            :src="$cookies.get('server-url') + '/storage/' + item.upload_id + '/HLS/thumbnail/out-img-00'+ num +'.jpg'"
+                          />
+                        </div>
                       </div>
                     </div>
                     <div class="flex-2 w-50">
@@ -112,7 +172,7 @@
                           <li>ID</li>
                           <li>Transcoding name</li>
                           <li>File name</li>
-                          <li>Output path</li>
+                          <li>Storage path</li>
                           <li>Thumbnail path</li>
                           <li>Storage</li>
                           <li>Bucket</li>
@@ -124,17 +184,29 @@
                           <li>{{item.file_name}}</li>
                           <li>
                             <a
-                              href="https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
-                            >https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8</a>
+                              v-if="item.storage === 's3'"
+                              :href="'https://'+item.bucket.String + '.s3.' + item.region.String  + '.amazonaws.com/' + item.upload_id +'/master.m3u8'"
+                            >https:// {{item.bucket.String }} .s3. {{item.region.String}} .amazonaws.com/{{item.upload_id}}/master.m3u8</a>
+
+                            <a
+                              v-if="item.storage === 'local'"
+                              :href="$myServerApi.getActiveServerUrl() + '/storage/' + item.upload_id + '/HLS/master.m3u8'"
+                            >{{$myServerApi.getActiveServerUrl()}}/storage/{{item.upload_id}}/HLS/master.m3u8</a>
                           </li>
                           <li>
                             <a
-                              href="https://bitdash-a.akamaihd.net/content/sintel/hls/"
-                            >https://bitdash-a.akamaihd.net/content/sintel/hls/</a>
+                              v-if="item.storage === 's3'"
+                              :href="'https://'+item.bucket.String + '.s3.' + item.region.String  + '.amazonaws.com/' + item.upload_id +'/thumbnail/'"
+                            >https:// {{item.bucket.String }} .s3. {{item.region.String}} .amazonaws.com/{{item.upload_id}}/thumbnail/</a>
+
+                            <a
+                              v-if="item.storage === 'local'"
+                              :href="$cookies.get('server-url') + '/storage/' + item.upload_id + '/HLS/thumbnail/'"
+                            >{{$cookies.get('server-url')}}/storage/{{item.upload_id}}/HLS/thumbnail/</a>
                           </li>
-                          <li v-if="item.Storage === 's3' ">AWS S3</li>
+                          <li v-if="item.storage === 's3' ">AWS S3</li>
                           <li v-else>Local</li>
-                          <li v-if="item.Storage === 's3' ">{{item.bucket}}</li>
+                          <li v-if="item.storage === 's3' ">{{item.bucket.String}}</li>
                           <li v-else>None</li>
                           <li>{{item.CreatedAt}}</li>
                         </ul>
@@ -174,7 +246,7 @@
                   class="progress-meter"
                   v-for="(progress_item, progress_index) in ProgressList"
                   :key="progress_index"
-                  v-if="progress_item.ID === item.ID"
+                  v-if="progress_item.ID === item.ID && progress_item.Progress < 99 "
                 >
                   <span class="transcode" :style="{ 'width': progress_item.Progress + '%'}"></span>
                 </div>
@@ -188,16 +260,16 @@
         <div class="pagination-section">
           <div class="flex-1">
             <div class="paginaiton-records">
-              <p>1 to 10 from 1000 records</p>
+              <p>1 to 15 from {{JList.total_record}} records</p>
             </div>
           </div>
           <div class="flex-2">
             <div class="pagination-pages">
-              <p>Page 2 from 10</p>
+              <p>Page {{JList.page}} from {{JList.total_page}}</p>
             </div>
 
             <ul class="pagination second">
-              <li class="prev">
+              <li class="prev" @click="GetListUrl('/api/v1/jobs/list/' + JList.prev_page)">
                 <a href="#">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -226,8 +298,8 @@
                   </svg>
                 </a>
               </li>
-              <li class="next">
-                <a href="#">
+              <li class="next" @click="GetListUrl('/api/v1/jobs/list/' + JList.next_page)">
+                <a>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -286,6 +358,7 @@ export default {
     ...mapState({
       JList: state => state.jobs.JobsList,
       UList: state => state.jobs.UploadList,
+      RequestLoad: state => state.jobs.RequestLoad,
       ProgressList: state => state.jobs.TranscodingProgressList
     }),
     player() {
@@ -297,7 +370,6 @@ export default {
   mounted() {
     // Create WebSocket connection.
     this.wsconneciton = new WebSocket("ws://localhost:8080/v1/ws/progress");
-
     this.wsconneciton.onopen = function() {
       console.log("connected");
     };
@@ -312,30 +384,94 @@ export default {
       var json = JSON.parse(e.data);
       this.$store.commit("SET_TRANSCODING_PROGRESS_LIST", json);
     };
-  },
 
-  async fetch({ $axios, params, store }) {
-    await store.dispatch("GET_JOBS_LIST");
-  },
+    // Create WebSocket connection.
+    this.wsconneciton = new WebSocket("ws://localhost:8080/v1/ws/messages");
+    this.wsconneciton.onopen = function() {
+      console.log("connected");
+    };
 
-  methods: {
-    ShowJobDetails(id) {
-      if (this.ShowJob !== id) {
-        this.ShowJob = id;
-        console.log(this.player);
-        return;
-        if (Hls.isSupported()) {
-          const hls = new Hls();
-          hls.loadSource(
-            "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
-          );
-          hls.attachMedia(this.player.media);
+    this.wsconneciton.onclose = function(e) {
+      console.log("connection closed (" + e.code + ")");
+    };
 
-          window.hls = hls;
-        } else {
-          console.log("hello");
-        }
+    this.wsconneciton.onmessage = e => {
+      // deserialize json data
+      var json = JSON.parse(e.data);
+
+      if (json.Status == "Progress") {
+        console.log(json);
+        this.$store.commit("UPDATE_TRANSCODING_PROGRESS_STATUS", json);
       }
+    };
+  },
+
+  async fetch({ store }) {
+    await store.dispatch("GET_JOBS_LIST", "/api/v1/jobs/list/1");
+  },
+  methods: {
+    ShowJobDetails(item) {
+      let playerInstance;
+      if (this.ShowJob !== item.ID) {
+        // show component
+        this.ShowJob = item.ID;
+        // update url
+        let playUrl = null;
+        if (item.storage === "s3") {
+          playUrl =
+            "https://" +
+            item.bucket.String +
+            ".s3." +
+            item.region.String +
+            ".amazonaws.com/" +
+            item.upload_id +
+            "/master.m3u8";
+        } else if (item.storage === "local") {
+          playUrl =
+            this.$cookies.get("server-url") +
+            "/storage/" +
+            item.upload_id +
+            "/HLS/master.m3u8";
+        }
+
+        // check player and destory it
+        if (playerInstance) {
+          playerInstance.remove();
+        }
+
+        // Init player
+        setTimeout(() => {
+          playerInstance = jwplayer("jwplayer").setup({
+            playlist: [
+              {
+                image: "/assets/myPoster.jpg",
+                sources: [
+                  {
+                    file: playUrl
+                  }
+                ]
+              }
+            ],
+            autostart: false
+          });
+        }, 500);
+      }
+    },
+    async copySomething(text) {
+      try {
+        await this.$copyText(text);
+
+        this.$toast.info("Copy video output link", {
+          position: "top-right",
+          duration: 2000
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    },
+
+    GetListUrl(url) {
+      this.$store.dispatch("GET_JOBS_LIST", url);
     }
   }
 };

@@ -226,58 +226,76 @@ export default {
 
   methods: {
     UploadVideos() {
-      let progressData = [];
       let uid = Math.floor(Math.random() * 9999999);
-      let data = new FormData();
-      this.files.forEach(file => {
-        data.append("files", file.file, file.name);
+      let data = [];
+
+      for (let i in this.SList) {
+        data.push({
+          form: [],
+          server_name: this.SList[i].name,
+          api_key: this.SList[i].api_key,
+          domain: this.SList[i].domain
+        });
+      }
+
+      let a = 0;
+      for (let x = 0; x < this.files.length; x++) {
+        data[a].form.push({
+          file: this.files[x].file,
+          file_name: this.files[x].file.name
+        });
+
         this.$store.commit("SET_UPLOAD_LIST", {
-          filename: file.name,
+          filename: this.files[x].file.name,
           progress: null,
           uid: uid
         });
-      });
-
-      data.append(
-        "template",
-        JSON.stringify(this.TList[this.SelectTemplate].template)
-      );
-
-      data.append("name", this.Name);
-      data.append("template_id", this.TList[this.SelectTemplate]._id);
-      data.append("description", this.Description);
-
-      // Upload progress
-      const config = {
-        onUploadProgress: progressEvent => {
-          var percentCompleted = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
-
-          this.$store.commit("UPDATE_UPLOAD_LIST", {
-            uid: uid,
-            progress: percentCompleted
-          });
-        },
-        headers: {
-          Authorization: "123",
-          "Content-Type": "multipart/form-data"
+        a++;
+        if (data.length - 1 < a) {
+          a = 0;
         }
-      };
+      }
 
-      this.$axios
-        .post("http://localhost:8080/api/v1/upload", data, config)
-        .then(res => {
-          this.$store.commit("DELETE_UPLOAD_LIST", {
-            uid: uid
-          });
-          console.log("Success Upload");
-        })
-        .catch(err => {
-          this.$store.commit("DELETE_UPLOAD_LIST", {
-            uid: uid
-          });
+      let formD = new FormData();
+      data.forEach(server => {
+        server.form.forEach(file => {
+          formD.append("files", file.file, file.file_name);
         });
+        formD.append(
+          "template",
+          JSON.stringify(this.TList[this.SelectTemplate].template)
+        );
+
+        formD.append("name", this.Name);
+        formD.append("template_id", this.TList[this.SelectTemplate]._id);
+        formD.append("description", this.Description);
+
+        // Upload progress
+        const config = {
+          onUploadProgress: progressEvent => {
+            var percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+
+            this.$store.commit("UPDATE_UPLOAD_LIST", {
+              uid: uid,
+              progress: percentCompleted
+            });
+          },
+          headers: {
+            Authorization: server.api_key,
+            "Content-Type": "multipart/form-data"
+          }
+        };
+
+        this.$store.dispatch("UPLOAD_VIDEOS_TO_SERVER", {
+          data: formD,
+          config: config,
+          uid: uid
+        });
+
+        formD = new FormData();
+      });
 
       setTimeout(() => {
         this.$router.push({ name: "jobs-manage" });

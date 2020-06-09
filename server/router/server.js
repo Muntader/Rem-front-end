@@ -7,8 +7,8 @@ const serversModel = require("../database/models/servers");
 const getServer = new serversModel();
 // Validate pattern
 const pattern = {
-  name: "(string)",
-  domain: "[url]"
+  name: "(string)"
+  // domain: "[url]"
 };
 
 // Get server list
@@ -44,6 +44,7 @@ router.post("/update", async (req, res, next) => {
     req.body.name,
     req.body.api_key,
     req.body.domain,
+    req.body.cloud_domain,
     req.body.id
   );
   insertServer.update();
@@ -55,14 +56,14 @@ router.post("/update", async (req, res, next) => {
 });
 
 // Delete server
-router.delete("/delete/:id", async (req, res, next) => {
+router.delete("/delete/:id", async (req, res) => {
   const message = await getServer.delete(req.params.id);
 
   res.json({ code: 200, data: "Successful deleted id:" + req.params.id });
 });
 
 // Create server
-router.post("/create", async (req, res, next) => {
+router.post("/create", async (req, res) => {
   const valid = jpv.validate(req.body, pattern);
 
   if (!valid) {
@@ -72,7 +73,8 @@ router.post("/create", async (req, res, next) => {
   var insertServer = new serversModel(
     req.body.name,
     req.body.api_key,
-    req.body.domain
+    req.body.domain,
+    req.body.cloud_domain
   );
   insertServer.insert();
 

@@ -10,14 +10,14 @@ export const actions = {
    */
   async GET_TEMPLATES_LIST({ commit }, id) {
     // Start spinner load
-    commit("SPINER_LOAD");
+    commit("SPINER_LOAD", true);
 
     // Send request
     await this.$axios.get("http://localhost:3000/api/templates").then(
       response => {
         if (response.status === 200) {
           commit("SET_TEMPLATES_LIST", response.data.data);
-          commit("SPINER_CLEAN");
+          commit("SPINER_LOAD", false);
         }
       },
       error => {

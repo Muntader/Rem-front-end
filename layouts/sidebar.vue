@@ -8,7 +8,7 @@
       <ul class="sidebar__body--list-icons">
         <li class="dashboard">
           <div class="icon">
-            <router-link :to="{ name: 'dashboard' }">
+            <router-link :to="{ name: 'index' }">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 id="Layer_5"

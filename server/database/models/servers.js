@@ -7,10 +7,11 @@ var url = "mongodb://localhost:27017/";
 var assert = require("assert");
 
 module.exports = class templates {
-  constructor(name, apiKey, ip, id) {
+  constructor(name, apiKey, ip, cloudDomain, id) {
     this.name = name;
     this.apiKey = apiKey;
     this.domain = ip;
+    this.cloudDomain = cloudDomain;
     this.id = id;
   }
 
@@ -21,7 +22,8 @@ module.exports = class templates {
       var myobj = {
         name: this.name,
         api_key: this.apiKey,
-        domain: this.domain
+        domain: this.domain,
+        cloud_domain: this.cloudDomain
       };
       dbo.collection("servers").insertOne(myobj, function(err, res) {
         if (err) throw err;
@@ -38,7 +40,8 @@ module.exports = class templates {
       var myobj = {
         name: this.name,
         api_key: this.apiKey,
-        domain: this.domain
+        domain: this.domain,
+        cloud_domain: this.cloudDomain
       };
       console.log(myobj);
       dbo

@@ -241,7 +241,7 @@
               v-model="TemplateOptions.template.options.cloudtype"
             >
               <option value="local">Local</option>
-              <option value="s3">AWS S3</option>
+              <option value="aws">AWS S3</option>
             </select>
           </div>
 

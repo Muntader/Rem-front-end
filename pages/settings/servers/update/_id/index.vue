@@ -51,6 +51,17 @@
           </ValidationProvider>
         </div>
 
+        <div class="form">
+          <label for="t-domain">Cloud Domain</label>
+          <input
+            v-model="SEdit.cloud_domain"
+            name="t-domain"
+            type="text"
+            class="f-border form-input"
+            placeholder="Cloud Domian URL"
+          />
+        </div>
+
         <!-- .form -->
         <div class="form btn-upload">
           <button class="btn btn-blue" @click="UpdateServer" v-if="!ButtonLoad">Update</button>
@@ -94,7 +105,8 @@ export default {
         ID: this.SEdit._id,
         Name: this.SEdit.name,
         ApiKey: this.SEdit.api_key,
-        Domain: this.SEdit.domain
+        Domain: this.SEdit.domain,
+        CloudDomain: this.SEdit.cloud_domain
       });
 
       this.ButtonLoad = false;
