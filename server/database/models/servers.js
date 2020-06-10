@@ -63,6 +63,7 @@ module.exports = class templates {
     MongoClient.connect(url, (err, db) => {
       if (err) throw err;
       var dbo = db.db("rem");
+      console.log(id);
       var myobj = { _id: ObjectId(id) };
       dbo.collection("servers").deleteOne(myobj, function(err, res) {
         if (err) return err;

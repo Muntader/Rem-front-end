@@ -124,7 +124,7 @@ export const actions = {
 
   async DELETE_SERVER({ commit }, { ID, INDEX }) {
     // Send request
-    await this.$nodeServerApi.delete("/apai/servers/delete/" + ID).then(
+    await this.$nodeServerApi.delete("/api/servers/delete/" + ID).then(
       response => {
         if (response.status === 200) {
           this.$toast.success(response.data.message, {

@@ -291,7 +291,8 @@ export default {
         this.$store.dispatch("UPLOAD_VIDEOS_TO_SERVER", {
           data: formD,
           config: config,
-          uid: uid
+          uid: uid,
+          url: server.domain
         });
 
         formD = new FormData();

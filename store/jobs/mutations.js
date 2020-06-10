@@ -29,25 +29,31 @@ export const mutations = {
 
   SET_TRANSCODING_PROGRESS_LIST(state, data) {
     if (state.TranscodingProgressList.length > 0) {
-      for (var i in state.TranscodingProgressList) {
-        console.log(data.ID + "-" + state.TranscodingProgressList[i].ID);
-        if (state.TranscodingProgressList[i].ID == data.ID) {
-          state.TranscodingProgressList[i].Progress = data.Progress;
-        } else {
-          state.TranscodingProgressList.push(data);
+      let obj = state.TranscodingProgressList.find(o => o.ID == data.ID);
+      if (obj !== undefined) {
+        for (var i in state.TranscodingProgressList) {
+          if (state.TranscodingProgressList[i].ID == data.ID) {
+            state.TranscodingProgressList[i].Progress = data.Progress;
+          }
         }
+      } else {
+        state.TranscodingProgressList.push(data);
       }
     } else {
-      console.log("push");
       state.TranscodingProgressList.push(data);
     }
   },
 
   UPDATE_TRANSCODING_PROGRESS_STATUS(state, data) {
+    // Delete progress finished
+    for (var i in state.TranscodingProgressList) {
+      if (state.TranscodingProgressList[i].ID == data.ID) {
+        state.TranscodingProgressList.splice(i, 1);
+      }
+    }
+
     for (var i in state.JobsList.records) {
-      console.log(state.JobsList.records[i].ID + "-" + data.ID);
       if (state.JobsList.records[i].ID == data.ID) {
-        console.log(data.Message);
         state.JobsList.records[i].status = data.Message;
       }
     }

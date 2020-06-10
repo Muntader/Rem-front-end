@@ -24,18 +24,18 @@ export const actions = {
     );
   },
 
-  UPLOAD_VIDEOS_TO_SERVER({ commit }, { data, config }) {
+  UPLOAD_VIDEOS_TO_SERVER({ commit }, { data, config, uid, url }) {
     this.$axios
-      .post("http://localhost:8080/api/v1/upload", data, config)
+      .post(url + "/api/v1/upload", data, config)
       .then(res => {
         commit("DELETE_UPLOAD_LIST", {
           uid: uid
         });
-        console.log("Success Upload");
       })
       .catch(err => {
-        commit("DELETE_UPLOAD_LIST", {
-          uid: uid
+        this.$toast.success("Error to publish jobs in " + url + " Server", {
+          position: "top-right",
+          duration: 2000
         });
       });
   }

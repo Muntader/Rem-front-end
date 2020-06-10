@@ -48,6 +48,11 @@
                   <span>Transcoding</span>
                 </div>
 
+                <div class="st-transcoding" v-if="item.status === 'Queue' ">
+                  <div class="dot"></div>
+                  <span>Queue</span>
+                </div>
+
                 <div class="st-upload-s3" v-if="item.status === 'Upload-to-s3' ">
                   <div class="dot"></div>
                   <span>Upload To S3</span>
@@ -55,6 +60,10 @@
                 <div class="st-finish" v-if="item.status === 'Finish' ">
                   <div class="dot"></div>
                   <span>Finish</span>
+                </div>
+                <div class="st-error" v-if="item.status === 'Error'">
+                  <div class="dot"></div>
+                  <span>Error</span>
                 </div>
               </td>
               <td>{{item.CreatedAt}}</td>
@@ -220,7 +229,9 @@
                         </div>
                         <div class="details-list__value">
                           <ul>
-                            <li id="error">{{item.logs}}</li>
+                            <li id="error">
+                              <p style="word-break: break-all;">{{item.log.String}}</p>
+                            </li>
                           </ul>
                         </div>
                       </div>
@@ -360,11 +371,7 @@ export default {
       UList: state => state.jobs.UploadList,
       RequestLoad: state => state.jobs.RequestLoad,
       ProgressList: state => state.jobs.TranscodingProgressList
-    }),
-    player() {
-      console.log(this.$refs);
-      return this.$refs.plyr.player;
-    }
+    })
   },
 
   mounted() {
@@ -400,7 +407,6 @@ export default {
       var json = JSON.parse(e.data);
 
       if (json.Status == "Progress") {
-        console.log(json);
         this.$store.commit("UPDATE_TRANSCODING_PROGRESS_STATUS", json);
       }
     };
@@ -409,6 +415,7 @@ export default {
   async fetch({ store }) {
     await store.dispatch("GET_JOBS_LIST", "/api/v1/jobs/list/1");
   },
+
   methods: {
     ShowJobDetails(item) {
       let playerInstance;
