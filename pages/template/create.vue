@@ -68,7 +68,8 @@
         <div class="presets">
           <div class="presets__head">
             <button
-              :to="{name: 'jobs-create'}"
+              v-if="!HideAddPresetButton"
+              :to="{ name: 'jobs-create' }"
               type="button"
               class="btn btn-blue btn-plus"
               @click="AddPreset"
@@ -88,7 +89,9 @@
                   Name
                   <div
                     class="icon"
-                    v-tooltip.right-start="'Add video export name example for better name : 220p or video_220 '"
+                    v-tooltip.right-start="
+                      'Add video export name example for better name : 220p or video_220 '
+                    "
                   ></div>
                 </label>
 
@@ -110,12 +113,18 @@
                   Preset
                   <div
                     class="icon"
-                    v-tooltip.right-start="'A preset is a collection of options that will provide a certain encoding speed to compression ratio. A slower preset will provide better compression (compression is quality per filesize).'"
+                    v-tooltip.right-start="
+                      'A preset is a collection of options that will provide a certain encoding speed to compression ratio. A slower preset will provide better compression (compression is quality per filesize).'
+                    "
                   ></div>
                 </label>
 
                 <ValidationProvider rules="required" v-slot="{ errors }">
-                  <select name="t-encode" class="f-border form-input" v-model="item.preset">
+                  <select
+                    name="t-encode"
+                    class="f-border form-input"
+                    v-model="item.preset"
+                  >
                     <option value="ultrafast">ultrafast</option>
                     <option value="superfast">superfast</option>
                     <option value="veryfast">veryfast</option>
@@ -130,11 +139,19 @@
                   <span class="input-vaild-error">{{ errors[0] }}</span>
                 </ValidationProvider>
               </div>
-              <div class="form" v-if="TemplateOptions.template.options.format !== 'HLS-MP3'">
-                >
+              <div
+                class="form"
+                v-if="TemplateOptions.template.options.format !== 'HLS-MP3'"
+              >
+                
                 <label for="t-videobitrate">
                   Video Bitrate
-                  <div class="icon" v-tooltip.right-start="'Add video bit per second exm: 2000000'"></div>
+                  <div
+                    class="icon"
+                    v-tooltip.right-start="
+                      'Add video bit per second exm: 2000000'
+                    "
+                  ></div>
                 </label>
 
                 <ValidationProvider rules="required" v-slot="{ errors }">
@@ -153,7 +170,9 @@
                   Audio Bitrate
                   <div
                     class="icon"
-                    v-tooltip.right-start="'Here you can specify the number of bits per second'"
+                    v-tooltip.right-start="
+                      'Here you can specify the number of bits per second'
+                    "
                   ></div>
                 </label>
                 <input
@@ -164,13 +183,18 @@
                   placeholder="Audio bitrate "
                 />
               </div>
-              <div class="form" v-if="TemplateOptions.template.options.format !== 'HLS-MP3'">
-                >
+              <div
+                class="form"
+                v-if="TemplateOptions.template.options.format !== 'HLS-MP3'"
+              >
+                
                 <label for="t-scale">
                   Scale
                   <div
                     class="icon"
-                    v-tooltip.right-start="'simply resize your video to a specific size (e.g 320)'"
+                    v-tooltip.right-start="
+                      'simply resize your video to a specific size (e.g 320)'
+                    "
                   ></div>
                 </label>
 
@@ -193,19 +217,27 @@
         <!-- /.presets -->
 
         <!-- .dash -->
-        <div class="dash" v-if="TemplateOptions.template.options.format === 'DASH'">
+        <div
+          class="dash"
+          v-if="TemplateOptions.template.options.format === 'DASH'"
+        >
           <div class="switch">
             <div class="form">
               <label class="switch-title">
                 Output HLS
                 <div
                   class="icon"
-                  v-tooltip.right-start="'Output HLS playlists in addition to MPEG DASH'"
+                  v-tooltip.right-start="
+                    'Output HLS playlists in addition to MPEG DASH'
+                  "
                 ></div>
               </label>
             </div>
             <label class="switch-label">
-              <input type="checkbox" v-model="TemplateOptions.template.options.mpdoptions.hls" />
+              <input
+                type="checkbox"
+                v-model="TemplateOptions.template.options.mpdoptions.hls"
+              />
               <span class="slider round"></span>
             </label>
           </div>
@@ -216,12 +248,17 @@
                 Output Smooth
                 <div
                   class="icon"
-                  v-tooltip.right-start="'Produce an output compatible with Smooth Streaming'"
+                  v-tooltip.right-start="
+                    'Produce an output compatible with Smooth Streaming'
+                  "
                 ></div>
               </label>
             </div>
             <label class="switch-label">
-              <input type="checkbox" v-model="TemplateOptions.template.options.mpdoptions.smooth" />
+              <input
+                type="checkbox"
+                v-model="TemplateOptions.template.options.mpdoptions.smooth"
+              />
               <span class="slider round"></span>
             </label>
           </div>
@@ -245,7 +282,10 @@
             </select>
           </div>
 
-          <div class="form" v-if="TemplateOptions.template.options.cloudtype === 's3'">
+          <div
+            class="form"
+            v-if="TemplateOptions.template.options.cloudtype === 's3'"
+          >
             <label for="t-storage">S3 region</label>
 
             <ValidationProvider rules="required" v-slot="{ errors }">
@@ -260,7 +300,10 @@
             </ValidationProvider>
           </div>
 
-          <div class="form" v-if="TemplateOptions.template.options.cloudtype === 's3'">
+          <div
+            class="form"
+            v-if="TemplateOptions.template.options.cloudtype === 's3'"
+          >
             <label for="t-storage">S3 bucket</label>
 
             <ValidationProvider rules="required" v-slot="{ errors }">
@@ -280,7 +323,10 @@
         <hr />
 
         <!-- .thumbnail -->
-        <div class="thumbnail" v-if="TemplateOptions.template.options.format !== 'HLS-MP3'">
+        <div
+          class="thumbnail"
+          v-if="TemplateOptions.template.options.format !== 'HLS-MP3'"
+        >
           <!-- Rounded switch -->
 
           <div class="switch">
@@ -290,17 +336,24 @@
             <label class="switch-label">
               <input
                 type="checkbox"
-                v-model="TemplateOptions.template.options.thumbnailoptions.thumbnail"
+                v-model="
+                  TemplateOptions.template.options.thumbnailoptions.thumbnail
+                "
               />
               <span class="slider round"></span>
             </label>
           </div>
 
-          <div class="form" v-if="TemplateOptions.template.options.thumbnailoptions.thumbnail">
+          <div
+            class="form"
+            v-if="TemplateOptions.template.options.thumbnailoptions.thumbnail"
+          >
             <label for="t-scale">Image scale</label>
             <ValidationProvider rules="required" v-slot="{ errors }">
               <input
-                v-model="TemplateOptions.template.options.thumbnailoptions.scale"
+                v-model="
+                  TemplateOptions.template.options.thumbnailoptions.scale
+                "
                 name="t-scale"
                 type="text"
                 class="f-border form-input"
@@ -316,7 +369,13 @@
 
         <!-- .form -->
         <div class="form btn-upload">
-          <button class="btn btn-blue" @click="CreateTemplate" v-if="!ButtonLoad">Upload</button>
+          <button
+            class="btn btn-blue"
+            @click="CreateTemplate"
+            v-if="!ButtonLoad"
+          >
+            Upload
+          </button>
           <button class="btn btn-blue" disabled v-else>
             <i class="ic-load ic-load-light"></i>
           </button>
@@ -336,12 +395,12 @@ export default {
       Name: "",
       Description: "",
       ButtonLoad: false,
+      HideAddPresetButton: false,
       TemplateOptions: {
         template: {
           presets: [],
           options: {
             format: "HLS",
-
             enctype: "string",
             encstatus: false,
             cloudtype: "local",
@@ -370,6 +429,22 @@ export default {
     };
   },
 
+  watch: {
+    TemplateOptions: {
+      // This will let Vue know to look inside the array
+      deep: true,
+
+      // We have to move our method to a handler field
+      handler() {
+          setTimeout( () => {
+              if (this.TemplateOptions.template.options.format === "HLS-MP3" && this.TemplateOptions.template.presets.length  > 1) {
+          this.TemplateOptions.template.presets = [];
+        }
+          }, 200);
+      }
+    }
+  },
+
   components: {
     ValidationProvider
   },
@@ -387,15 +462,30 @@ export default {
     },
 
     AddPreset() {
-      this.TemplateOptions.template.presets.push({
-        name: "",
-        videobitrate: 0,
-        audiobitrate: null,
-        aspectratio: null,
-        resolution: null,
-        scale: null,
-        preset: "faster"
-      });
+      if (this.TemplateOptions.template.options.format === "HLS-MP3") {
+        if (this.TemplateOptions.template.presets.length < 1) {
+          this.HideAddPresetButton = true;
+          this.TemplateOptions.template.presets.push({
+            name: "",
+            videobitrate: 0,
+            audiobitrate: null,
+            aspectratio: null,
+            resolution: null,
+            scale: null,
+            preset: "faster"
+          });
+        }
+      } else {
+        this.TemplateOptions.template.presets.push({
+          name: "",
+          videobitrate: 0,
+          audiobitrate: null,
+          aspectratio: null,
+          resolution: null,
+          scale: null,
+          preset: "faster"
+        });
+      }
     }
   }
 };

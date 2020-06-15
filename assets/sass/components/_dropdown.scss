@@ -1,6 +1,13 @@
 .dropdown {
   position: relative;
   display: inline-block;
+  .right-menu {
+    right: 0;
+  }
+
+  .left-menu {
+    left: 0;
+  }
   .menu {
     box-shadow: 0 8px 14px -5px rgba(0, 0, 0, 0.14);
     border-radius: 5px;
@@ -9,7 +16,6 @@
     font-size: 13px;
     position: absolute;
     width: 250px;
-    right: 0;
     transition: all 0.3s;
     z-index: 1;
     &:before {

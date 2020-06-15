@@ -24,7 +24,9 @@
   }
 
   &__body {
-    margin-top: 155px;
+    position: absolute;
+    width: 100%;
+    top: 180px;
     &--list-icons {
       padding: 0;
       li.dashboard {

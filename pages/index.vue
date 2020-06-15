@@ -132,12 +132,16 @@ export default {
     };
   },
   mounted() {
-    // get jobs list
+ 
+    // Remove protocol from domain
+    const protocol = this.$cookies.get("server-url").slice(5)
+
+      // get jobs list
     this.GetJobsDaily();
     this.GetJobsCount();
 
     // Create WebSocket connection.
-    this.wsconneciton = new WebSocket("ws://localhost:8080/v1/ws/dashboard");
+    this.wsconneciton = new WebSocket("ws:"+ protocol +"/v1/ws/dashboard");
     this.wsconneciton.onopen = function() {
       console.log("connected");
     };

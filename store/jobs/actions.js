@@ -38,5 +38,31 @@ export const actions = {
           duration: 2000
         });
       });
+  },
+
+  async DELETE_JOB({ commit }, { ID, INDEX }) {
+    // Send request
+    await this.$api.delete("/api/v1/job/delete/" + ID).then(
+      response => {
+        if (response.status === 200) {
+          this.$toast.success(response.data.message, {
+            position: "top-right",
+            duration: 2000
+          });
+
+          commit("DELETE_JOB_ITEM", INDEX);
+        }
+      },
+      error => {
+        if (error.response.status === 404) {
+          this.$router.push({ name: "404" });
+        } else {
+          this.$toast.error(error.response.data.message, {
+            position: "top-right",
+            duration: 2000
+          });
+        }
+      }
+    );
   }
 };

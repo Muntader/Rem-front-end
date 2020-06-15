@@ -25,24 +25,24 @@
         </transition>
       </div>
     </div>
-    <div class="navbar__right">
-      <div class="navbar__left--dropdown dropdown">
-        <button type="button" @click="ActiveRightDropdown = !ActiveRightDropdown">
-          <span class="icon">
-            <img src="~/assets/icons/notify.svg" alt="server" />
-          </span>
-          <span class="notify-dot"></span>
-        </button>
-        <transition name="dropdown-ts">
-          <div class="menu dw-light" v-show="ActiveRightDropdown">
-            <ul>
-              <li class="item">Server 2</li>
-              <li class="item">Server 2</li>
-            </ul>
-          </div>
-        </transition>
-      </div>
-    </div>
+    <!-- <div class="navbar__right"> -->
+    <!--   <div class="navbar__left--dropdown dropdown"> -->
+    <!--     <button type="button" @click="ActiveRightDropdown = !ActiveRightDropdown"> -->
+    <!--       <span class="icon"> -->
+    <!--         <img src="~/assets/icons/notify.svg" alt="server" /> -->
+    <!--       </span> -->
+    <!--       <span class="notify-dot"></span> -->
+    <!--     </button> -->
+    <!--     <transition name="dropdown-ts"> -->
+    <!--       <div class="menu dw-light" v-show="ActiveRightDropdown"> -->
+    <!--         <ul> -->
+    <!--           <li class="item">Server 2</li> -->
+    <!--           <li class="item">Server 2</li> -->
+    <!--         </ul> -->
+    <!--       </div> -->
+    <!--     </transition> -->
+    <!--   </div> -->
+    <!-- </div> -->
   </div>
 </template>
 

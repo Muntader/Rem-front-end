@@ -1,10 +1,27 @@
 <template>
   <div class="app-jobs-manage">
     <div class="app-jobs-manage__header">
-      <div class="flex-1"></div>
+      <div class="flex-1">
+        <div class="dropdown">
+          <button
+            type="button"
+            @click="ActiveLeftDropdown = !ActiveLeftDropdown"
+          >
+            Generate CSV
+          </button>
+          <transition name="dropdown-ts">
+            <div class="menu left-menu dw-light" v-show="ActiveLeftDropdown">
+              <ul>
+                <li class="item" @click="GenerateCSV(10)">Last 10</li>
+                <li class="item" @click="GenerateCSV(10)">Last 20</li>
+              </ul>
+            </div>
+          </transition>
+        </div>
+      </div>
       <div class="flex-2">
         <router-link
-          :to="{name: 'jobs-create'}"
+          :to="{ name: 'jobs-create' }"
           type="button"
           class="btn btn-blue"
           v-tooltip.top-center="'Create new job'"
@@ -18,6 +35,7 @@
       <div class="app-table">
         <table>
           <tr>
+            <th></th>
             <th>ID</th>
             <th>Job Name</th>
             <th>Input</th>
@@ -30,34 +48,86 @@
           <tbody
             v-for="(item, index) in JList.records"
             :key="index"
-            @click.prevent="ShowJobDetails(item)"
+            @dblclick="ShowJobDetails(item)"
           >
             <tr>
-              <td>{{item.ID}}</td>
-              <td>{{item.name}}</td>
-              <td>{{item.file_name}}</td>
-              <td>{{item.template_id}}</td>
-              <td>{{item.storage}}</td>
+              <td>
+                <div class="img-mp3" v-if="item.format === 'HLS-MP3'">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    enable-background="new 0 0 512 512"
+                    viewBox="0 0 512 512"
+                    width="48"
+                  >
+                    <g>
+                      <path
+                        d="m481 0v362c0 49.8-40.5 90-90 90-26.82 0-47.94-11.95-60-23.4-18.3-16.2-30-40.2-30-66.6s11.7-50.4 30-66.9c15.9-14.4 37.2-23.1 60-23.1 36.01 0 59.09 22.62 60 23.4v-138.2l-120 26.7-120 26.7v211.4c0 49.5-40.5 90-90 90s-90-40.5-90-90 40.5-90 90-90c23.1 0 44.1 9 60 23.4 0-260.4 0 1.6 0-288.8z"
+                        fill="#4da6ff"
+                      />
+                      <path
+                        d="m481 0v362c0 49.8-40.5 90-90 90-26.82 0-47.94-11.95-60-23.4v-133.5c15.9-14.4 37.2-23.1 60-23.1 36.01 0 59.09 22.62 60 23.4v-138.2l-120 26.7v-150.6z"
+                        fill="#37f"
+                      />
+                    </g>
+                  </svg>
+                </div>
+                <div class="img-thumbnail" v-else>
+                  <div class="img" v-if="item.storage === 's3'">
+                    <img
+                      width="68"
+                      :src="
+                        'https://' +
+                          item.bucket.String +
+                          '.s3.' +
+                          item.region.String +
+                          '.amazonaws.com/' +
+                          item.upload_id +
+                          '/thumbnail/out-img-001.jpg'
+                      "
+                    />
+                  </div>
+
+                  <div class="img" v-if="item.storage === 'local'">
+                    <img
+                      width="68"
+                      :src="
+                        $cookies.get('server-url') +
+                          '/storage/' +
+                          item.upload_id +
+                          '/HLS/thumbnail/out-img-001.jpg'
+                      "
+                    />
+                  </div>
+                </div>
+              </td>
+              <td>{{ item.ID }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.file_name }}</td>
+              <td>{{ item.template_id }}</td>
+              <td>{{ item.storage }}</td>
               <td id="status">
                 <div class="st-upload" v-if="item.status === 'Uploading'">
                   <div class="dot"></div>
                   <span>Uploading</span>
                 </div>
-                <div class="st-transcoding" v-if="item.status === 'Transcoding' ">
+                <div
+                  class="st-transcoding"
+                  v-if="item.status === 'Transcoding'"
+                >
                   <div class="dot"></div>
                   <span>Transcoding</span>
                 </div>
 
-                <div class="st-transcoding" v-if="item.status === 'Queue' ">
+                <div class="st-transcoding" v-if="item.status === 'Queue'">
                   <div class="dot"></div>
                   <span>Queue</span>
                 </div>
 
-                <div class="st-upload-s3" v-if="item.status === 'Upload-to-s3' ">
+                <div class="st-upload-s3" v-if="item.status === 'Upload-to-s3'">
                   <div class="dot"></div>
                   <span>Upload To S3</span>
                 </div>
-                <div class="st-finish" v-if="item.status === 'Finish' ">
+                <div class="st-finish" v-if="item.status === 'Finish'">
                   <div class="dot"></div>
                   <span>Finish</span>
                 </div>
@@ -66,11 +136,18 @@
                   <span>Error</span>
                 </div>
               </td>
-              <td>{{item.CreatedAt}}</td>
+              <td>{{ item.CreatedAt }}</td>
               <td>
                 <div
                   class="app-table-more copy-link"
-                  @click.prevent="copySomething($cookies.get('server-url') + '/storage/' + item.upload_id + '/HLS/master.m3u8')"
+                  @click.prevent="
+                    copySomething(
+                      $cookies.get('server-url') +
+                        '/storage/' +
+                        item.upload_id +
+                        '/HLS/master.m3u8'
+                    )
+                  "
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -101,7 +178,10 @@
                 </div>
 
                 <div class="app-table-more dropdown">
-                  <div class="icon" @click.prevent="ActiveOptionsDropdown = item.ID">
+                  <div
+                    class="icon"
+                    @click.prevent="ActiveOptionsDropdown = item.ID"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -130,9 +210,21 @@
                     </svg>
                   </div>
                   <transition name="dropdown-ts">
-                    <div class="menu dw-light" v-show="ActiveOptionsDropdown === item.ID">
+                    <div
+                      class="menu dw-blue"
+                      v-show="ActiveOptionsDropdown === item.ID"
+                    >
                       <ul>
-                        <li class="item">Delete</li>
+                        <li class="item" @click="DeleteJob(item.ID, index)">
+                          <a href="#">
+                            <span class="delete-icon"></span>
+                            Delete
+                            <span
+                              class="ic-load ic-load-light"
+                              v-if="DeleteButtonLoad === item.ID"
+                            ></span>
+                          </a>
+                        </li>
                       </ul>
                     </div>
                   </transition>
@@ -151,27 +243,46 @@
                       </div>
                       <hr />
 
-                      <div class="thumbnail">
+                      <div class="thumbnail" v-if="item.format !== 'HLS-MP3'">
                         <div
                           class="d-img"
-                          v-for="(num, index) in 10"
+                          v-for="(num, index) in 6"
                           :key="index"
-                          v-if="item.storage === 's3'"
                         >
-                          <img
-                            :src="'https://'+item.bucket.String + '.s3.' + item.region.String  + '.amazonaws.com/' + item.upload_id +'/thumbnail/out-img-00'+ num +'.jpg'"
-                          />
+                          <div class="img" v-if="item.storage === 's3'">
+                            <img
+                              :src="
+                                'https://' +
+                                  item.bucket.String +
+                                  '.s3.' +
+                                  item.region.String +
+                                  '.amazonaws.com/' +
+                                  item.upload_id +
+                                  '/thumbnail/out-img-00' +
+                                  num +
+                                  '.jpg'
+                              "
+                            />
+                          </div>
                         </div>
 
                         <div
                           class="d-img"
                           v-for="(num, index) in 6"
                           :key="index"
-                          v-if="item.storage === 'local'"
                         >
-                          <img
-                            :src="$cookies.get('server-url') + '/storage/' + item.upload_id + '/HLS/thumbnail/out-img-00'+ num +'.jpg'"
-                          />
+                          <div class="img" v-if="item.storage === 'local'">
+                            <img
+                              :src="
+                                $cookies.get('server-url') +
+                                  '/storage/' +
+                                  item.upload_id +
+                                  '/HLS/thumbnail/out-img-00' +
+                                  num +
+                                  '.jpg'
+                              "
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -182,42 +293,86 @@
                           <li>Transcoding name</li>
                           <li>File name</li>
                           <li>Storage path</li>
-                          <li>Thumbnail path</li>
+                          <li v-if="item.format !== 'HLS-MP3'">
+                            Thumbnail path
+                          </li>
                           <li>Storage</li>
                           <li>Bucket</li>
                           <li>Created at</li>
                         </ul>
                         <ul class="details-list__value">
-                          <li>{{item.ID}}</li>
-                          <li>{{item.name}}</li>
-                          <li>{{item.file_name}}</li>
+                          <li>{{ item.ID }}</li>
+                          <li>{{ item.name }}</li>
+                          <li>{{ item.file_name }}</li>
                           <li>
                             <a
                               v-if="item.storage === 's3'"
-                              :href="'https://'+item.bucket.String + '.s3.' + item.region.String  + '.amazonaws.com/' + item.upload_id +'/master.m3u8'"
-                            >https:// {{item.bucket.String }} .s3. {{item.region.String}} .amazonaws.com/{{item.upload_id}}/master.m3u8</a>
+                              :href="
+                                'https://' +
+                                  item.bucket.String +
+                                  '.s3.' +
+                                  item.region.String +
+                                  '.amazonaws.com/' +
+                                  item.upload_id +
+                                  '/master.m3u8'
+                              "
+                              >https://{{ item.bucket.String }}.s3.
+                              {{ item.region.String }}.amazonaws.com/{{
+                                item.upload_id
+                              }}/master.m3u8</a
+                            >
 
                             <a
                               v-if="item.storage === 'local'"
-                              :href="$myServerApi.getActiveServerUrl() + '/storage/' + item.upload_id + '/HLS/master.m3u8'"
-                            >{{$myServerApi.getActiveServerUrl()}}/storage/{{item.upload_id}}/HLS/master.m3u8</a>
+                              :href="
+                                $myServerApi.getActiveServerUrl() +
+                                  '/storage/' +
+                                  item.upload_id +
+                                  '/HLS/master.m3u8'
+                              "
+                              >{{
+                                $myServerApi.getActiveServerUrl()
+                              }}/storage/{{ item.upload_id }}/HLS/master.m3u8</a
+                            >
                           </li>
-                          <li>
+                          <li v-if="item.format !== 'HLS-MP3'">
                             <a
                               v-if="item.storage === 's3'"
-                              :href="'https://'+item.bucket.String + '.s3.' + item.region.String  + '.amazonaws.com/' + item.upload_id +'/thumbnail/'"
-                            >https:// {{item.bucket.String }} .s3. {{item.region.String}} .amazonaws.com/{{item.upload_id}}/thumbnail/</a>
+                              :href="
+                                'https://' +
+                                  item.bucket.String +
+                                  '.s3.' +
+                                  item.region.String +
+                                  '.amazonaws.com/' +
+                                  item.upload_id +
+                                  '/thumbnail/'
+                              "
+                              >https://{{ item.bucket.String }}.s3.
+                              {{ item.region.String }}.amazonaws.com/{{
+                                item.upload_id
+                              }}/thumbnail/</a
+                            >
 
                             <a
                               v-if="item.storage === 'local'"
-                              :href="$cookies.get('server-url') + '/storage/' + item.upload_id + '/HLS/thumbnail/'"
-                            >{{$cookies.get('server-url')}}/storage/{{item.upload_id}}/HLS/thumbnail/</a>
+                              :href="
+                                $cookies.get('server-url') +
+                                  '/storage/' +
+                                  item.upload_id +
+                                  '/HLS/thumbnail/'
+                              "
+                              >{{ $cookies.get("server-url") }}/storage/{{
+                                item.upload_id
+                              }}/HLS/thumbnail/</a
+                            >
                           </li>
-                          <li v-if="item.storage === 's3' ">AWS S3</li>
+                          <li v-if="item.storage === 's3'">AWS S3</li>
                           <li v-else>Local</li>
-                          <li v-if="item.storage === 's3' ">{{item.bucket.String}}</li>
+                          <li v-if="item.storage === 's3'">
+                            {{ item.bucket.String }}
+                          </li>
                           <li v-else>None</li>
-                          <li>{{item.CreatedAt}}</li>
+                          <li>{{ item.CreatedAt }}</li>
                         </ul>
                       </div>
                       <hr />
@@ -230,7 +385,9 @@
                         <div class="details-list__value">
                           <ul>
                             <li id="error">
-                              <p style="word-break: break-all;">{{item.log.String}}</p>
+                              <p style="word-break: break-all;">
+                                {{ item.log.String }}
+                              </p>
                             </li>
                           </ul>
                         </div>
@@ -248,7 +405,10 @@
                 v-if="pitem.filename === item.file_name && pitem.progress < 98"
               >
                 <div class="progress-meter">
-                  <span class="upload" :style="{ 'width': pitem.progress + '%'}"></span>
+                  <span
+                    class="upload"
+                    :style="{ width: pitem.progress + '%' }"
+                  ></span>
                 </div>
               </td>
 
@@ -257,9 +417,14 @@
                   class="progress-meter"
                   v-for="(progress_item, progress_index) in ProgressList"
                   :key="progress_index"
-                  v-if="progress_item.ID === item.ID && progress_item.Progress < 99 "
+                  v-if="
+                    progress_item.ID === item.ID && progress_item.Progress < 99
+                  "
                 >
-                  <span class="transcode" :style="{ 'width': progress_item.Progress + '%'}"></span>
+                  <span
+                    class="transcode"
+                    :style="{ width: progress_item.Progress + '%' }"
+                  ></span>
                 </div>
               </td>
             </tr>
@@ -271,16 +436,19 @@
         <div class="pagination-section">
           <div class="flex-1">
             <div class="paginaiton-records">
-              <p>1 to 15 from {{JList.total_record}} records</p>
+              <p>1 to 15 from {{ JList.total_record }} records</p>
             </div>
           </div>
           <div class="flex-2">
             <div class="pagination-pages">
-              <p>Page {{JList.page}} from {{JList.total_page}}</p>
+              <p>Page {{ JList.page }} from {{ JList.total_page }}</p>
             </div>
 
             <ul class="pagination second">
-              <li class="prev" @click="GetListUrl('/api/v1/jobs/list/' + JList.prev_page)">
+              <li
+                class="prev"
+                @click="GetListUrl('/api/v1/jobs/list/' + JList.prev_page)"
+              >
                 <a href="#">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -294,7 +462,9 @@
                     width="12px"
                     class
                   >
-                    <g transform="matrix(-1 -1.22465e-16 1.22465e-16 -1 492.004 492.004)">
+                    <g
+                      transform="matrix(-1 -1.22465e-16 1.22465e-16 -1 492.004 492.004)"
+                    >
                       <g>
                         <g>
                           <path
@@ -309,7 +479,10 @@
                   </svg>
                 </a>
               </li>
-              <li class="next" @click="GetListUrl('/api/v1/jobs/list/' + JList.next_page)">
+              <li
+                class="next"
+                @click="GetListUrl('/api/v1/jobs/list/' + JList.next_page)"
+              >
                 <a>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -338,17 +511,19 @@
       </div>
     </div>
   </div>
-</template> 
+</template>
 
 <script>
-var _self = this;
+const FileDownload = require("js-file-download");
 import Hls from "hls.js";
 import { mapState } from "vuex";
 export default {
   data() {
     return {
+      ActiveLeftDropdown: false,
       ActiveOptionsDropdown: 0,
       ShowJob: 0,
+      DeleteButtonLoad: 0,
       playerOptions: {
         controls: [
           "play-large",
@@ -375,8 +550,11 @@ export default {
   },
 
   mounted() {
+    // Remove protocol from domain
+    const protocol = this.$cookies.get("server-url").slice(5);
+
     // Create WebSocket connection.
-    this.wsconneciton = new WebSocket("ws://localhost:8080/v1/ws/progress");
+    this.wsconneciton = new WebSocket("ws:" + protocol + "/v1/ws/progress");
     this.wsconneciton.onopen = function() {
       console.log("connected");
     };
@@ -393,7 +571,7 @@ export default {
     };
 
     // Create WebSocket connection.
-    this.wsconneciton = new WebSocket("ws://localhost:8080/v1/ws/messages");
+    this.wsconneciton = new WebSocket("ws:" + protocol + "/v1/ws/messages");
     this.wsconneciton.onopen = function() {
       console.log("connected");
     };
@@ -424,6 +602,7 @@ export default {
         this.ShowJob = item.ID;
         // update url
         let playUrl = null;
+        let thumbUrl = null;
         if (item.storage === "s3") {
           playUrl =
             "https://" +
@@ -433,12 +612,27 @@ export default {
             ".amazonaws.com/" +
             item.upload_id +
             "/master.m3u8";
+
+          thumbUrl =
+            "https://" +
+            item.bucket.String +
+            ".s3." +
+            item.region.String +
+            ".amazonaws.com/" +
+            item.upload_id +
+            "/thumbnail/out-img-005.jpg";
         } else if (item.storage === "local") {
           playUrl =
             this.$cookies.get("server-url") +
             "/storage/" +
             item.upload_id +
             "/HLS/master.m3u8";
+
+          thumbUrl =
+            this.$cookies.get("server-url") +
+            "/storage/" +
+            item.upload_id +
+            "/HLS/thumbnail/out-img-005.jpg";
         }
 
         // check player and destory it
@@ -479,6 +673,19 @@ export default {
 
     GetListUrl(url) {
       this.$store.dispatch("GET_JOBS_LIST", url);
+    },
+
+    DeleteJob(id, index) {
+      this.$store.dispatch("DELETE_JOB", { ID: id, INDEX: index });
+    },
+
+    GenerateCSV(limit) {
+      this.$api.get("/api/v1/job/generate/csv/" + limit).then(
+        res => {
+          FileDownload(res.data, "jobs.csv");
+        },
+        err => {}
+      );
     }
   }
 };

@@ -4,6 +4,34 @@
     justify-content: space-between;
     margin-bottom: 25px;
 
+    .flex-1 {
+      .dropdown {
+        button {
+          background-color: #fff;
+          border: 1px solid #656565;
+          cursor: pointer;
+          color: #656565;
+          border-radius: 6px;
+          font-size: 16px;
+          font-weight: bold;
+          padding: 15px;
+          &:hover {
+            border: 1px solid #1979fc;
+          }
+        }
+
+        .menu {
+          li {
+            padding: 10px;
+            font-size: 15px;
+            &:before {
+              background-color: $blueColor;
+            }
+          }
+        }
+      }
+    }
+
     .flex-2 {
       a {
         padding: 15px 15px;

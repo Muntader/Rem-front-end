@@ -2,7 +2,7 @@
   <div class="app-create-jobs">
     <div class="app-create-jobs__header m-header">
       <div class="flex-1">
-        <router-link :to="{name: 'jobs-manage'}" class="btn btn-light">
+        <router-link :to="{ name: 'jobs-manage' }" class="btn btn-light">
           <div class="icon-back"></div>
         </router-link>
       </div>
@@ -36,13 +36,16 @@
         <div class="form">
           <label for="t-description">
             Videos files
-            <div class="icon" v-tooltip.right-start="'Able to drag and drop files'"></div>
+            <div
+              class="icon"
+              v-tooltip.right-start="'Able to drag and drop files'"
+            ></div>
           </label>
           <client-only>
             <div class="upload f-border">
               <ul v-if="files.length">
                 <li v-for="(file, index) in files" :key="file.id">
-                  <span>{{file.name}}</span>
+                  <span>{{ file.name }}</span>
                 </li>
               </ul>
               <ul v-else>
@@ -56,7 +59,10 @@
                 </td>
               </ul>
 
-              <div v-show="$refs.upload && $refs.upload.dropActive" class="drop-active">
+              <div
+                v-show="$refs.upload && $refs.upload.dropActive"
+                class="drop-active"
+              >
                 <h3>Drop files to upload</h3>
               </div>
               <div class="btn btn-blue">
@@ -83,7 +89,9 @@
             Choose server
             <div
               class="icon"
-              v-tooltip.right-start="'You can choose a server, by default we will divine videos to each server even if the servers are occupied the videos will be in queue after upload'"
+              v-tooltip.right-start="
+                'You can choose a server, by default we will divine videos to each server even if the servers are occupied the videos will be in queue after upload'
+              "
             ></div>
           </label>
           <div class="servers">
@@ -92,8 +100,8 @@
                 class="flex__item f-border w-50"
                 v-for="(item, index) in SList"
                 :key="index"
-                :class="{'active': SelectServer === index}"
-                @click="SelectServer = index"
+                :class="{ active: SelectServer === index, busy: item.busy }"
+                @click="SelectServerFunc(index)"
               >
                 <div class="content">
                   <div class="icon">
@@ -125,7 +133,7 @@
                       </g>
                     </svg>
                   </div>
-                  <h4>{{item.name}}</h4>
+                  <h4>{{ item.name }}</h4>
                 </div>
               </div>
             </div>
@@ -142,7 +150,7 @@
                 class="flex__item f-border w-50"
                 v-for="(item, index) in TList"
                 :key="index"
-                :class="{'active': SelectTemplate === index}"
+                :class="{ active: SelectTemplate === index }"
                 @click="SelectTemplate = index"
               >
                 <div class="content">
@@ -175,7 +183,7 @@
                       </g>
                     </svg>
                   </div>
-                  <h4>{{item.name}}</h4>
+                  <h4>{{ item.name }}</h4>
                 </div>
               </div>
             </div>
@@ -185,7 +193,13 @@
 
         <!-- .form -->
         <div class="form btn-upload">
-          <button class="btn btn-blue" v-if="!ButtonLoad" @click="UploadVideos()">Upload</button>
+          <button
+            class="btn btn-blue"
+            v-if="!ButtonLoad"
+            @click="UploadVideos()"
+          >
+            Upload
+          </button>
           <button class="btn btn-blue" disabled v-else>
             <i class="ic-load ic-load-light"></i>
           </button>
@@ -224,51 +238,112 @@ export default {
     await store.dispatch("GET_TEMPLATES_LIST");
   },
 
+  mounted() {
+    for (let i in this.SList) {
+      this.$axios
+        .get(this.SList[i].domain + "/api/v1/jobs/monitor/status")
+        .then(
+          response => {
+            if (Math.trunc(response.data.data.cpu_system) < 50) {
+              this.SList[i].busy = false;
+            } else {
+              this.SList[i].busy = true;
+            }
+          },
+          err => {}
+        );
+    }
+  },
+
   methods: {
     UploadVideos() {
       let uid = Math.floor(Math.random() * 9999999);
       let data = [];
 
-      for (let i in this.SList) {
-        data.push({
-          form: [],
-          server_name: this.SList[i].name,
-          api_key: this.SList[i].api_key,
-          domain: this.SList[i].domain
-        });
-      }
-
-      let a = 0;
-      for (let x = 0; x < this.files.length; x++) {
-        data[a].form.push({
-          file: this.files[x].file,
-          file_name: this.files[x].file.name
-        });
-
-        this.$store.commit("SET_UPLOAD_LIST", {
-          filename: this.files[x].file.name,
-          progress: null,
-          uid: uid
-        });
-        a++;
-        if (data.length - 1 < a) {
-          a = 0;
+      if (this.SelectServer !== "default") {
+        for (let i in this.SList) {
+          if (!this.SList[i].busy) {
+            data.push({
+              form: [],
+              server_name: this.SList[i].name,
+              api_key: this.SList[i].api_key,
+              domain: this.SList[i].domain
+            });
+          }
         }
-      }
 
-      let formD = new FormData();
-      data.forEach(server => {
-        server.form.forEach(file => {
-          formD.append("files", file.file, file.file_name);
+        let a = 0;
+        for (let x = 0; x < this.files.length; x++) {
+          data[a].form.push({
+            file: this.files[x].file,
+            file_name: this.files[x].file.name
+          });
+
+          this.$store.commit("SET_UPLOAD_LIST", {
+            filename: this.files[x].file.name,
+            progress: null,
+            uid: uid
+          });
+          a++;
+          if (data.length - 1 < a) {
+            a = 0;
+          }
+        }
+
+        let formD = new FormData();
+        data.forEach(server => {
+          server.form.forEach(file => {
+            formD.append("files", file.file, file.file_name);
+          });
+          formD.append(
+            "template",
+            JSON.stringify(this.TList[this.SelectTemplate].template)
+          );
+
+          formD.append("name", this.Name);
+          formD.append("template_id", this.TList[this.SelectTemplate]._id);
+          formD.append("description", this.Description);
+
+          // Upload progress
+          const config = {
+            onUploadProgress: progressEvent => {
+              var percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+
+              this.$store.commit("UPDATE_UPLOAD_LIST", {
+                uid: uid,
+                progress: percentCompleted
+              });
+            },
+            headers: {
+              Authorization: server.api_key,
+              "Content-Type": "multipart/form-data"
+            }
+          };
+
+          this.$store.dispatch("UPLOAD_VIDEOS_TO_SERVER", {
+            data: formD,
+            config: config,
+            uid: uid,
+            url: server.domain
+          });
+
+          formD = new FormData();
         });
-        formD.append(
-          "template",
-          JSON.stringify(this.TList[this.SelectTemplate].template)
-        );
+      } else {
+        let formD = new FormData();
+        this.files.forEach(file => {
+          formD.append("files", file.file, file.name);
+          formD.append(
+            "template",
+            JSON.stringify(this.TList[this.SelectTemplate].template)
+          );
 
-        formD.append("name", this.Name);
-        formD.append("template_id", this.TList[this.SelectTemplate]._id);
-        formD.append("description", this.Description);
+          formD.append("name", this.Name);
+          formD.append("template_id", this.TList[this.SelectTemplate]._id);
+          formD.append("description", this.Description);
+        });
 
         // Upload progress
         const config = {
@@ -283,7 +358,7 @@ export default {
             });
           },
           headers: {
-            Authorization: server.api_key,
+            Authorization: this.SList[this.SelectServer].api_key,
             "Content-Type": "multipart/form-data"
           }
         };
@@ -292,15 +367,21 @@ export default {
           data: formD,
           config: config,
           uid: uid,
-          url: server.domain
+          url: this.SList[this.SelectServer].domain
         });
-
-        formD = new FormData();
-      });
+      }
 
       setTimeout(() => {
         this.$router.push({ name: "jobs-manage" });
       }, 2000);
+    },
+
+    SelectServerFunc(index) {
+      if (this.SelectServer === index) {
+        this.SelectServer = "default";
+        return;
+      }
+      this.SelectServer = index;
     }
   }
 };

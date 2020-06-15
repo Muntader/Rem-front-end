@@ -19,6 +19,7 @@
     "express": "^4.17.1",
     "hls.js": "^0.13.2",
     "jpv": "^2.2.1",
+    "js-file-download": "^0.4.12",
     "mongodb": "^3.5.7",
     "nuxt": "^2.0.0",
     "nuxt-clipboard2": "^0.2.1",

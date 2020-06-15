@@ -11,6 +11,10 @@ export const mutations = {
     state.RequestLoad = status;
   },
 
+  DELETE_JOB_ITEM(state, index) {
+    state.JobsList.records.splice(index, 1);
+  },
+
   UPDATE_UPLOAD_LIST(state, data) {
     for (var i in state.UploadList) {
       if (state.UploadList[i].uid == data.uid) {

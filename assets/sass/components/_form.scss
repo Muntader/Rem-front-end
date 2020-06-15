@@ -135,17 +135,31 @@
         }
       }
 
-      &__item:hover,
-      .active {
-        background-color: $blueColor;
-        svg {
-          path {
-            fill: #fff !important;
-          }
+      &__item:hover {
+        border: 1px solid $blueColor;
+      }
+    }
+
+    .active {
+      background-color: $blueColor;
+      svg {
+        path {
+          fill: #fff !important;
         }
-        h4 {
-          color: #fff;
+      }
+      h4 {
+        color: #fff;
+      }
+    }
+    .busy {
+      background-color: $blueColor;
+      svg {
+        path {
+          fill: #fff !important;
         }
+      }
+      h4 {
+        color: #fff;
       }
     }
   }
