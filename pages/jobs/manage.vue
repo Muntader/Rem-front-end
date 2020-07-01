@@ -3,12 +3,8 @@
     <div class="app-jobs-manage__header">
       <div class="flex-1">
         <div class="dropdown">
-          <button
-            type="button"
-            @click="ActiveLeftDropdown = !ActiveLeftDropdown"
-          >
             Generate CSV
-          </button>
+          <button type="button" @click="ActiveLeftDropdown = !ActiveLeftDropdown">Generate CSV</button>
           <transition name="dropdown-ts">
             <div class="menu left-menu dw-light" v-show="ActiveLeftDropdown">
               <ul>
@@ -75,6 +71,7 @@
                   <div class="img" v-if="item.storage === 's3'">
                     <img
                       width="68"
+                      onerror="this.style.display='none'"
                       :src="
                         'https://' +
                           item.bucket.String +
@@ -90,6 +87,7 @@
                   <div class="img" v-if="item.storage === 'local'">
                     <img
                       width="68"
+                      onerror="this.style.display='none'"
                       :src="
                         $cookies.get('server-url') +
                           '/storage/' +
@@ -110,10 +108,7 @@
                   <div class="dot"></div>
                   <span>Uploading</span>
                 </div>
-                <div
-                  class="st-transcoding"
-                  v-if="item.status === 'Transcoding'"
-                >
+                <div class="st-transcoding" v-if="item.status === 'Transcoding'">
                   <div class="dot"></div>
                   <span>Transcoding</span>
                 </div>
@@ -178,10 +173,7 @@
                 </div>
 
                 <div class="app-table-more dropdown">
-                  <div
-                    class="icon"
-                    @click.prevent="ActiveOptionsDropdown = item.ID"
-                  >
+                  <div class="icon" @click.prevent="ShowDropdown(item.ID)">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -210,10 +202,7 @@
                     </svg>
                   </div>
                   <transition name="dropdown-ts">
-                    <div
-                      class="menu dw-blue"
-                      v-show="ActiveOptionsDropdown === item.ID"
-                    >
+                    <div class="menu right-menu dw-blue" v-show="ActiveOptionsDropdown === item.ID">
                       <ul>
                         <li class="item" @click="DeleteJob(item.ID, index)">
                           <a href="#">
@@ -233,7 +222,7 @@
             </tr>
 
             <tr v-if="ShowJob === item.ID" class="tr-job">
-              <td colspan="7">
+              <td colspan="9">
                 <div class="job-details">
                   <hr />
                   <div class="flex">
@@ -244,13 +233,10 @@
                       <hr />
 
                       <div class="thumbnail" v-if="item.format !== 'HLS-MP3'">
-                        <div
-                          class="d-img"
-                          v-for="(num, index) in 6"
-                          :key="index"
-                        >
+                        <div class="d-img" v-for="(num, index) in 6">
                           <div class="img" v-if="item.storage === 's3'">
                             <img
+                              onerror="this.style.display='none'"
                               :src="
                                 'https://' +
                                   item.bucket.String +
@@ -266,13 +252,10 @@
                           </div>
                         </div>
 
-                        <div
-                          class="d-img"
-                          v-for="(num, index) in 6"
-                          :key="index"
-                        >
+                        <div class="d-img" v-for="(num, index) in 6">
                           <div class="img" v-if="item.storage === 'local'">
                             <img
+                              onerror="this.style.display='none'"
                               :src="
                                 $cookies.get('server-url') +
                                   '/storage/' +
@@ -293,9 +276,7 @@
                           <li>Transcoding name</li>
                           <li>File name</li>
                           <li>Storage path</li>
-                          <li v-if="item.format !== 'HLS-MP3'">
-                            Thumbnail path
-                          </li>
+                          <li v-if="item.format !== 'HLS-MP3'">Thumbnail path</li>
                           <li>Storage</li>
                           <li>Bucket</li>
                           <li>Created at</li>
@@ -316,11 +297,12 @@
                                   item.upload_id +
                                   '/master.m3u8'
                               "
-                              >https://{{ item.bucket.String }}.s3.
-                              {{ item.region.String }}.amazonaws.com/{{
-                                item.upload_id
-                              }}/master.m3u8</a
                             >
+                              https://{{ item.bucket.String }}.s3.
+                              {{ item.region.String }}.amazonaws.com/{{
+                              item.upload_id
+                              }}/master.m3u8
+                            </a>
 
                             <a
                               v-if="item.storage === 'local'"
@@ -330,10 +312,11 @@
                                   item.upload_id +
                                   '/HLS/master.m3u8'
                               "
-                              >{{
-                                $myServerApi.getActiveServerUrl()
-                              }}/storage/{{ item.upload_id }}/HLS/master.m3u8</a
                             >
+                              {{
+                              $myServerApi.getActiveServerUrl()
+                              }}/storage/{{ item.upload_id }}/HLS/master.m3u8
+                            </a>
                           </li>
                           <li v-if="item.format !== 'HLS-MP3'">
                             <a
@@ -347,11 +330,12 @@
                                   item.upload_id +
                                   '/thumbnail/'
                               "
-                              >https://{{ item.bucket.String }}.s3.
-                              {{ item.region.String }}.amazonaws.com/{{
-                                item.upload_id
-                              }}/thumbnail/</a
                             >
+                              https://{{ item.bucket.String }}.s3.
+                              {{ item.region.String }}.amazonaws.com/{{
+                              item.upload_id
+                              }}/thumbnail/
+                            </a>
 
                             <a
                               v-if="item.storage === 'local'"
@@ -361,16 +345,15 @@
                                   item.upload_id +
                                   '/HLS/thumbnail/'
                               "
-                              >{{ $cookies.get("server-url") }}/storage/{{
-                                item.upload_id
-                              }}/HLS/thumbnail/</a
                             >
+                              {{ $cookies.get("server-url") }}/storage/{{
+                              item.upload_id
+                              }}/HLS/thumbnail/
+                            </a>
                           </li>
                           <li v-if="item.storage === 's3'">AWS S3</li>
                           <li v-else>Local</li>
-                          <li v-if="item.storage === 's3'">
-                            {{ item.bucket.String }}
-                          </li>
+                          <li v-if="item.storage === 's3'">{{ item.bucket.String }}</li>
                           <li v-else>None</li>
                           <li>{{ item.CreatedAt }}</li>
                         </ul>
@@ -385,9 +368,7 @@
                         <div class="details-list__value">
                           <ul>
                             <li id="error">
-                              <p style="word-break: break-all;">
-                                {{ item.log.String }}
-                              </p>
+                              <p style="word-break: break-all;">{{ item.log.String }}</p>
                             </li>
                           </ul>
                         </div>
@@ -405,10 +386,7 @@
                 v-if="pitem.filename === item.file_name && pitem.progress < 98"
               >
                 <div class="progress-meter">
-                  <span
-                    class="upload"
-                    :style="{ width: pitem.progress + '%' }"
-                  ></span>
+                  <span class="upload" :style="{ width: pitem.progress + '%' }"></span>
                 </div>
               </td>
 
@@ -421,10 +399,7 @@
                     progress_item.ID === item.ID && progress_item.Progress < 99
                   "
                 >
-                  <span
-                    class="transcode"
-                    :style="{ width: progress_item.Progress + '%' }"
-                  ></span>
+                  <span class="transcode" :style="{ width: progress_item.Progress + '%' }"></span>
                 </div>
               </td>
             </tr>
@@ -445,10 +420,7 @@
             </div>
 
             <ul class="pagination second">
-              <li
-                class="prev"
-                @click="GetListUrl('/api/v1/jobs/list/' + JList.prev_page)"
-              >
+              <li class="prev" @click="GetListUrl('/api/v1/jobs/list/' + JList.prev_page)">
                 <a href="#">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -462,9 +434,7 @@
                     width="12px"
                     class
                   >
-                    <g
-                      transform="matrix(-1 -1.22465e-16 1.22465e-16 -1 492.004 492.004)"
-                    >
+                    <g transform="matrix(-1 -1.22465e-16 1.22465e-16 -1 492.004 492.004)">
                       <g>
                         <g>
                           <path
@@ -479,10 +449,7 @@
                   </svg>
                 </a>
               </li>
-              <li
-                class="next"
-                @click="GetListUrl('/api/v1/jobs/list/' + JList.next_page)"
-              >
+              <li class="next" @click="GetListUrl('/api/v1/jobs/list/' + JList.next_page)">
                 <a>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -620,7 +587,7 @@ export default {
             item.region.String +
             ".amazonaws.com/" +
             item.upload_id +
-            "/thumbnail/out-img-005.jpg";
+            "/thumbnail/";
         } else if (item.storage === "local") {
           playUrl =
             this.$cookies.get("server-url") +
@@ -632,7 +599,7 @@ export default {
             this.$cookies.get("server-url") +
             "/storage/" +
             item.upload_id +
-            "/HLS/thumbnail/out-img-005.jpg";
+            "/HLS/thumbnail/";
         }
 
         // check player and destory it
@@ -645,10 +612,12 @@ export default {
           playerInstance = jwplayer("jwplayer").setup({
             playlist: [
               {
-                image: "/assets/myPoster.jpg",
-                sources: [
+                image: thumbUrl + "out-img-003.jpg",
+                file: playUrl,
+                tracks: [
                   {
-                    file: playUrl
+                    file: thumbUrl + "100/thumbnail.vtt",
+                    kind: "thumbnails"
                   }
                 ]
               }
@@ -686,6 +655,14 @@ export default {
         },
         err => {}
       );
+    },
+
+    ShowDropdown(id) {
+      if (id === this.ActiveOptionsDropdown) {
+        this.ActiveOptionsDropdown = 0;
+        return;
+      }
+      this.ActiveOptionsDropdown = id;
     }
   }
 };

@@ -63,7 +63,7 @@
                     </svg>
                   </div>
                   <transition name="dropdown-ts">
-                    <div class="menu dw-blue" v-show="ActiveOptionsDropdown === index">
+                    <div class="menu right-menu dw-blue" v-show="ActiveOptionsDropdown === index">
                       <ul>
                         <li class="item" @click="DeleteServer(item._id, index)">
                           <a href="#">
@@ -98,7 +98,7 @@
       </div>
     </div>
   </div>
-</template> 
+</template>
 
 <script>
 import { mapState } from "vuex";
