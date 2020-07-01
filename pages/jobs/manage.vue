@@ -3,7 +3,6 @@
     <div class="app-jobs-manage__header">
       <div class="flex-1">
         <div class="dropdown">
-            Generate CSV
           <button type="button" @click="ActiveLeftDropdown = !ActiveLeftDropdown">Generate CSV</button>
           <transition name="dropdown-ts">
             <div class="menu left-menu dw-light" v-show="ActiveLeftDropdown">
