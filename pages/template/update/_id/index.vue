@@ -14,7 +14,7 @@
 
           <ValidationProvider rules="required" v-slot="{ errors }">
             <input
-              v-model="Name"
+              v-model="TEdit.name"
               name="t-name"
               id="t-name"
               type="text"
@@ -31,7 +31,7 @@
 
           <ValidationProvider rules="required" v-slot="{ errors }">
             <textarea
-              v-model="Description"
+              v-model="TEdit.description"
               name="t-description"
               id="t-description"
               class="f-border form-input"
@@ -55,7 +55,7 @@
               name="t-encode"
               id="t-encode"
               class="f-border form-input"
-              v-model="TemplateOptions.template.options.format"
+              v-model="TEdit.template.template.options.format"
             >
               <option value="DASH">DASH</option>
               <option value="HLS">HLS</option>
@@ -84,7 +84,7 @@
           <div class="presets__body">
             <div
               class="presets__body--list"
-              v-for="(item, index) in TemplateOptions.template.presets"
+              v-for="(item, index) in TEdit.template.template.presets"
               :key="index"
             >
               <div class="form">
@@ -143,10 +143,9 @@
                   <span class="input-vaild-error">{{ errors[0] }}</span>
                 </ValidationProvider>
               </div>
-
               <div
                 class="form"
-                v-if="TemplateOptions.template.options.format !== 'HLS-MP3'"
+                v-if="TEdit.template.template.options.format !== 'HLS-MP3'"
               >
 
                 <label for="t-videobitrate">
@@ -171,19 +170,18 @@
                   <span>{{ errors[0] }}</span>
                 </ValidationProvider>
               </div>
-
               <div class="form">
                 <label for="t-audiobitrate">
                   Audio Bitrate
-                  <span
+                  <div
                     class="icon"
                     v-tooltip.right-start="
                       'Here you can specify the number of bits per second'
                     "
-                  ></span>
+                  ></div>
                 </label>
                 <input
-                  v-model.numbe="item.audiobitrate"
+                  v-model.number="item.audiobitrate"
                   name="t-audiobitrate"
                   id="t-audiobitrate"
                   type="text"
@@ -191,10 +189,9 @@
                   placeholder="Audio bitrate "
                 />
               </div>
-
               <div
                 class="form"
-                v-if="TemplateOptions.template.options.format !== 'HLS-MP3'"
+                v-if="TEdit.template.template.options.format !== 'HLS-MP3'"
               >
 
                 <label for="t-scale">
@@ -220,7 +217,6 @@
                   <span class="input-vaild-error">{{ errors[0] }}</span>
                 </ValidationProvider>
               </div>
-
               <div class="splice-preset">
                 <button
                   v-if="!HideAddPresetButton"
@@ -232,7 +228,6 @@
                   <span class="icon"></span>
                 </button>
               </div>
-
             </div>
           </div>
         </div>
@@ -241,7 +236,7 @@
         <!-- .dash -->
         <div
           class="dash"
-          v-if="TemplateOptions.template.options.format === 'DASH'"
+          v-if="TEdit.template.template.options.format === 'DASH'"
         >
           <div class="switch">
             <div class="form">
@@ -258,7 +253,7 @@
             <label class="switch-label">
               <input
                 type="checkbox"
-                v-model="TemplateOptions.template.options.mpdoptions.hls"
+                v-model="TEdit.template.template.options.mpdoptions.hls"
               />
               <span class="slider round"></span>
             </label>
@@ -270,24 +265,20 @@
                 Output Smooth
                 <span
                   class="icon"
-                  v-tooltip.right-start="
-                    'Produce an output compatible with Smooth Streaming'
-                  "
+                  v-tooltip.right-start="'Produce an output compatible with Smooth Streaming'"
                 ></span>
               </label>
             </div>
             <label class="switch-label">
               <input
                 type="checkbox"
-                v-model="TemplateOptions.template.options.mpdoptions.smooth"
+                v-model="TEdit.template.template.options.mpdoptions.smooth"
               />
               <span class="slider round"></span>
             </label>
           </div>
         </div>
         <!-- /.dash -->
-
-        <hr />
 
         <!-- .storage -->
         <div class="storage">
@@ -298,7 +289,7 @@
               name="t-encode"
               id="t-storage"
               class="f-border form-input"
-              v-model="TemplateOptions.template.options.cloudtype"
+              v-model="TEdit.template.template.options.cloudtype"
             >
               <option value="aws">AWS S3</option>
             </select>
@@ -306,13 +297,13 @@
 
           <div
             class="form"
-            v-if="TemplateOptions.template.options.cloudtype === 's3'"
+            v-if="TEdit.template.template.options.cloudtype === 's3'"
           >
             <label for="t-region">S3 region</label>
 
             <ValidationProvider rules="required" v-slot="{ errors }">
               <input
-                v-model="TemplateOptions.template.options.awsoptions.region"
+                v-model="TEdit.template.template.options.awsoptions.region"
                 name="t-region"
                 id="t-region"
                 type="text"
@@ -325,13 +316,13 @@
 
           <div
             class="form"
-            v-if="TemplateOptions.template.options.cloudtype === 'aws'"
+            v-if="TEdit.template.template.options.cloudtype === 'aws'"
           >
             <label for="t-storage">S3 bucket</label>
 
             <ValidationProvider rules="required" v-slot="{ errors }">
               <input
-                v-model="TemplateOptions.template.options.awsoptions.bucket"
+                v-model="TEdit.template.template.options.awsoptions.bucket"
                 name="t-storage"
                 type="text"
                 class="f-border form-input"
@@ -343,13 +334,13 @@
 
           <div
             class="form"
-            v-if="TemplateOptions.template.options.cloudtype === 'aws'"
+            v-if="TEdit.template.template.options.cloudtype === 'aws'"
           >
             <label for="t-storage">S3 region</label>
 
             <ValidationProvider rules="required" v-slot="{ errors }">
               <input
-                v-model="TemplateOptions.template.options.awsoptions.region"
+                v-model="TEdit.template.template.options.awsoptions.region"
                 name="t-storage"
                 type="text"
                 class="f-border form-input"
@@ -366,7 +357,7 @@
         <!-- .thumbnail -->
         <div
           class="thumbnail"
-          v-if="TemplateOptions.template.options.format !== 'HLS-MP3'"
+          v-if="TEdit.template.template.options.format !== 'HLS-MP3'"
         >
           <!-- Rounded switch -->
 
@@ -378,7 +369,7 @@
               <input
                 type="checkbox"
                 v-model="
-                  TemplateOptions.template.options.thumbnailoptions.thumbnail
+                  TEdit.template.template.options.thumbnailoptions.thumbnail
                 "
               />
               <span class="slider round"></span>
@@ -387,13 +378,13 @@
 
           <div
             class="form"
-            v-if="TemplateOptions.template.options.thumbnailoptions.thumbnail"
+            v-if="TEdit.template.template.options.thumbnailoptions.thumbnail"
           >
             <label for="t-scale">Image scale</label>
             <ValidationProvider rules="required" v-slot="{ errors }">
               <input
                 v-model="
-                  TemplateOptions.template.options.thumbnailoptions.scale
+                  TEdit.template.template.options.thumbnailoptions.scale
                 "
                 name="t-scale"
                 type="text"
@@ -412,10 +403,10 @@
         <div class="form btn-upload">
           <button
             class="btn btn-blue"
-            @click="CreateTemplate"
+            @click="UpdateTemplate"
             v-if="!ButtonLoad"
           >
-            Upload
+            Update
           </button>
           <button class="btn btn-blue" disabled v-else>
             <i class="ic-load ic-load-light"></i>
@@ -428,8 +419,8 @@
 </template>
 
 <script>
-  import {ValidationProvider} from "vee-validate";
-
+  import { mapState } from "vuex";
+  import { ValidationProvider } from "vee-validate";
   export default {
     data() {
       return {
@@ -437,50 +428,19 @@
         Name: "",
         Description: "",
         ButtonLoad: false,
-        HideAddPresetButton: false,
-        TemplateOptions: {
-          template: {
-            presets: [],
-            options: {
-              format: "HLS",
-              enctype: "string",
-              encstatus: false,
-              cloudtype: "aws",
-              mpdoptions: {
-                usesegmenttimeline: true,
-                hls: false,
-                hlsmasterplaylistname: "master.m3u8",
-                smooth: false,
-                smoothclientmanifestname: null,
-                smoothservermanifestname: null
-              },
-              thumbnailoptions: {
-                thumbnail: true,
-                scale: 360,
-                format: null,
-                time: null
-              },
-
-              awsoptions: {
-                region: "",
-                bucket: null
-              }
-            }
-          }
-        }
+        HideAddPresetButton: false
       };
     },
 
     watch: {
-      TemplateOptions: {
+      TEdit: {
         // This will let Vue know to look inside the array
         deep: true,
-
         // We have to move our method to a handler field
         handler() {
-          setTimeout(() => {
-            if (this.TemplateOptions.template.options.format === "HLS-MP3" && this.TemplateOptions.template.presets.length > 1) {
-              this.TemplateOptions.template.presets = [];
+          setTimeout( () => {
+            if (this.TEdit.template.template.options.format === "HLS-MP3" && this.TEdit.template.template.presets.length  > 1) {
+              this.TEdit.template.template.presets = [];
             }
           }, 200);
         }
@@ -491,23 +451,31 @@
       ValidationProvider
     },
 
-    methods: {
-      async CreateTemplate() {
-        this.ButtonLoad = true;
-        await this.$store.dispatch("CREATE_TEMPLATE", {
-          Name: this.Name,
-          Description: this.Description,
-          Template: this.TemplateOptions
-        });
+    computed: mapState({
+      TEdit: state => state.templates.TemplateEdit
+    }),
 
+    async fetch({ $axios, params, store }) {
+      await store.dispatch("GET_TEMPLATE_EDIT", params.id);
+    },
+
+    methods: {
+      async UpdateTemplate() {
+        this.ButtonLoad = true;
+        await this.$store.dispatch("UPDATE_TEMPLATE", {
+          ID: this.TEdit._id,
+          Name: this.TEdit.name,
+          Description: this.TEdit.description,
+          Template: this.TEdit.template
+        });
         this.ButtonLoad = false;
       },
 
       AddPreset() {
-        if (this.TemplateOptions.template.options.format === "HLS-MP3") {
-          if (this.TemplateOptions.template.presets.length < 1) {
+        if (this.TEdit.template.template.options.format === "HLS-MP3") {
+          if (this.TEdit.template.template.presets.length < 1) {
             this.HideAddPresetButton = true;
-            this.TemplateOptions.template.presets.push({
+            this.TEdit.template.template.presets.push({
               name: "",
               videobitrate: 0,
               audiobitrate: null,
@@ -518,7 +486,7 @@
             });
           }
         } else {
-          this.TemplateOptions.template.presets.push({
+          this.TEdit.template.template.presets.push({
             name: "",
             videobitrate: 0,
             audiobitrate: null,
@@ -529,8 +497,9 @@
           });
         }
       },
+
       RemovePreset(index) {
-        this.TemplateOptions.template.presets.splice(index, 1)
+        this.TEdit.template.template.presets.splice(index, 1)
       }
     }
   };

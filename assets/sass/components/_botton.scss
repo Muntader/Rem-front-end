@@ -16,10 +16,24 @@
     height: 19px;
   }
 }
+.btn-delete {
+  .icon {
+    display: block;
+    background: url("~assets/icons/bin.svg");
+    background-repeat: no-repeat;
+    background-size: 26px 19px;
+    width: 26px;
+    height: 19px;
+  }
+}
 
 .btn-blue {
   color: #fff;
   background-color: $blueColor;
+}
+.btn-danger {
+  color: #fff;
+  background-color: $redColor;
 }
 
 .btn-light {
@@ -54,6 +68,7 @@
   background-repeat: no-repeat;
   background-size: 26px 19px;
 }
+
 @keyframes spin {
   0% {
     transform: rotate(360deg);

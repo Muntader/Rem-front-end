@@ -9,10 +9,12 @@ var url = "mongodb://localhost:27017/";
 var assert = require("assert");
 
 module.exports = class templates {
-  constructor(name, description, template) {
+  constructor(name, description, template, id) {
     this.name = name;
     this.description = description;
     this.template = template;
+    this.id = id;
+
   }
 
   insert() {
@@ -32,6 +34,32 @@ module.exports = class templates {
     });
   }
 
+
+  update() {
+    MongoClient.connect(url, (err, db) => {
+      if (err) throw err;
+      var dbo = db.db("rem");
+      var myobj = {
+        name: this.name,
+        description: this.description,
+        template: this.template
+      };
+      console.log(myobj);
+      dbo
+        .collection("templates")
+        .updateOne(
+          { _id: ObjectId(this.id) },
+          { $set: myobj },
+          { multi: false },
+          function(err, res) {
+            if (err) throw err;
+            console.log("1 template updated");
+            db.close();
+          }
+        );
+    });
+  }
+
   delete(id) {
     MongoClient.connect(url, (err, db) => {
       if (err) throw err;
@@ -39,7 +67,7 @@ module.exports = class templates {
       var myobj = { _id: ObjectId(id) };
       dbo.collection("templates").deleteOne(myobj, function(err, res) {
         if (err) return err;
-        console.log("1 server delete");
+        console.log("1 template delete");
         db.close();
       });
     });

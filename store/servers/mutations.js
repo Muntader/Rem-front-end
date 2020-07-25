@@ -1,6 +1,8 @@
 export const mutations = {
   SET_SERVER_LIST(state, data) {
-    state.ServerList = data;
+    if(data !== null) {
+      state.ServerList = data;
+    }
   },
 
   SET_SERVER_EDIT(state, data) {
@@ -21,6 +23,7 @@ export const mutations = {
     const getServerName = this.$cookies.get("server-name");
     if (getServerUrl == null) {
       // set in storage
+
       if (state.ServerList.length > 0) {
         this.$cookies.set("server-url", state.ServerList[0].domain);
         this.$cookies.set("server-key", state.ServerList[0].api_key);

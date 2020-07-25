@@ -36,8 +36,8 @@ module.exports = {
   plugins: [
     "~/plugins/vue-tooltip.js",
     "~/plugins/vue-upload.js",
-    "~/plugins/plyr.js",
     "~/plugins/vee-validate.js",
+    { src:  "~/plugins/websocket.js", ssr: false},
     { src: "~/plugins/storage-plug.js", ssr: true }
   ],
   /*
@@ -51,7 +51,8 @@ module.exports = {
     "cookie-universal-nuxt",
     "nuxt-clipboard2",
     "@nuxtjs/axios",
-    "@nuxtjs/toast"
+    "@nuxtjs/toast",
+    '@nuxtjs/date-fns',
   ],
 
   /*
@@ -71,5 +72,9 @@ module.exports = {
      ** You can extend webpack config here
      */
     extend(config, ctx) {}
+  },
+
+  router: {
+    middleware: ['auth']
   }
 };

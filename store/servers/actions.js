@@ -1,13 +1,7 @@
 import router from "vue-router";
 
 export const actions = {
-  // This function get cast details and cast  filmography
-  /**
-   * Get cast details and cast filmography
-   *
-   * @param {*} commit object
-   * @param {*} id cast id
-   */
+
   async GET_SERVER_LIST({ commit }) {
     // Start spinner load
     commit("SPINER_LOAD", true);
@@ -21,11 +15,6 @@ export const actions = {
         }
       },
       error => {
-        if (error.response.status === 404) {
-          this.$router.push({ name: "404" });
-        } else {
-          this.$router.push("/");
-        }
       }
     );
   },
@@ -88,7 +77,7 @@ export const actions = {
     );
   },
 
-  async UPDATE_SERVER({ ID, Name, ApiKey, Domain, CloudDomain }) {
+  async UPDATE_SERVER({commit},{ ID, Name, ApiKey, Domain, CDomain }) {
     // Send request
     await this.$nodeServerApi
       .post("/api/servers/update", {
@@ -96,7 +85,7 @@ export const actions = {
         name: Name,
         api_key: ApiKey,
         domain: Domain,
-        cloud_domain: CloudDomain
+        cloud_domain: CDomain
       })
       .then(
         response => {

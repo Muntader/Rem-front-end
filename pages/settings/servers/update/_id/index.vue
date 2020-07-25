@@ -17,7 +17,7 @@
               name="t-name"
               type="text"
               class="f-border form-input"
-              placeholder="Template name"
+              placeholder="Server name"
             />
             <span>{{ errors[0] }}</span>
           </ValidationProvider>
@@ -106,7 +106,7 @@ export default {
         Name: this.SEdit.name,
         ApiKey: this.SEdit.api_key,
         Domain: this.SEdit.domain,
-        CloudDomain: this.SEdit.cloud_domain
+        CDomain: this.SEdit.cloud_domain
       });
 
       this.ButtonLoad = false;

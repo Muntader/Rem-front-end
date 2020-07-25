@@ -1,7 +1,7 @@
 export const state = () => ({
   JobsList: {
     total_record: 0,
-    record: []
+    records: []
   },
   RequestLoad: true,
   UploadList: [],

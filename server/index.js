@@ -1,10 +1,13 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const restrictMiddleware = require("./auth/restrictMiddleware");
+const session = require('express-session')
 
 // router
 const serverRouter = require("./router/server");
 const templatesRouter = require("./router/templates");
+const authRouter = require("./router/auth");
 
 // database
 const migration = require("./database/dbconnect");
@@ -37,6 +40,15 @@ async function start() {
       extended: true
     })
   );
+
+  app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 60000 }
+  }))
+
+  app.use("/api/auth/", authRouter);
   app.use("/api/servers/", serverRouter);
   app.use("/api/templates/", templatesRouter);
   // Give nuxt middleware to express

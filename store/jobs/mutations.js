@@ -4,7 +4,15 @@ export const mutations = {
   },
 
   SET_UPLOAD_LIST(state, data) {
-    state.UploadList.push(data);
+    if(state.UploadList.length === 0) {
+      state.UploadList.push(data);
+    }else {
+      const index = state.UploadList.findIndex(x => x.upload_id === data.upload_id)
+      // here you can check specific property for an object whether it exist in your array or not
+      if (index === -1){
+        state.UploadList.push(data);
+      }
+    }
   },
 
   SPINER_LOAD(state, status) {
@@ -16,19 +24,27 @@ export const mutations = {
   },
 
   UPDATE_UPLOAD_LIST(state, data) {
-    for (var i in state.UploadList) {
-      if (state.UploadList[i].uid == data.uid) {
-        state.UploadList[i].progress = data.progress;
+    if(state.UploadList.length > 0) {
+      for (var i = 0; i < state.UploadList.length; i++) {
+        if (state.UploadList[i].upload_id == data.uid) {
+            state.UploadList[i].progress = data.progress;
+            state.UploadList[i].total = data.total;
+            state.UploadList[i].loaded = data.loaded;
+        }
       }
     }
   },
 
   DELETE_UPLOAD_LIST(state, data) {
-    for (var i in state.UploadList) {
-      if (state.UploadList[i].uid == data.uid) {
+    for (var i = 0; i < state.UploadList.length; i++) {
+      if (state.UploadList[i].upload_id == data.uid) {
         state.UploadList.splice(i, 1);
       }
     }
+  },
+
+  SET_UPLOAD_TO_JOB_LIST(state, data) {
+    state.JobsList.records.push(...data);
   },
 
   SET_TRANSCODING_PROGRESS_LIST(state, data) {

@@ -90,7 +90,7 @@
             <div
               class="icon"
               v-tooltip.right-start="
-                'You can choose a server, by default we will divine videos to each server even if the servers are occupied the videos will be in queue after upload'
+                'You can choose a server, by default we will divine videos to each server even if the servers are occupied the videos will be in queue after upload, Note: domt change server in upload process you can see all upload progress in same jobs management '
               "
             ></div>
           </label>
@@ -220,7 +220,7 @@ export default {
     return {
       Name: "",
       Description: "",
-      SelectServer: null,
+      SelectServer: "default",
       SelectTemplate: null,
       ButtonLoad: false,
       files: []
@@ -241,10 +241,15 @@ export default {
   mounted() {
     for (let i in this.SList) {
       this.$axios
-        .get(this.SList[i].domain + "/api/v1/jobs/monitor/status")
+        .get(this.SList[i].domain + "/api/v1/jobs/monitor/status", {
+          headers: {
+            Authorization: this.SList[i].api_key,
+            "Content-Type": "multipart/form-data"
+          }
+        })
         .then(
           response => {
-            if (Math.trunc(response.data.data.cpu_system) < 50) {
+            if (Math.trunc(response.data.data.cpu_user) < 70) {
               this.SList[i].busy = false;
             } else {
               this.SList[i].busy = true;
@@ -257,10 +262,21 @@ export default {
 
   methods: {
     UploadVideos() {
+      if (this.SelectTemplate === null) {
+        this.$toast.info("Please select template", {
+          position: "top-right",
+          duration: 2000
+        });
+
+        return;
+      }
+
+      this.ButtonLoad = true;
       let uid = Math.floor(Math.random() * 9999999);
       let data = [];
 
-      if (this.SelectServer !== "default") {
+
+      if (this.SelectServer === "default") {
         for (let i in this.SList) {
           if (!this.SList[i].busy) {
             data.push({
@@ -279,11 +295,6 @@ export default {
             file_name: this.files[x].file.name
           });
 
-          this.$store.commit("SET_UPLOAD_LIST", {
-            filename: this.files[x].file.name,
-            progress: null,
-            uid: uid
-          });
           a++;
           if (data.length - 1 < a) {
             a = 0;
@@ -292,14 +303,27 @@ export default {
 
         let formD = new FormData();
         data.forEach(server => {
+
+          let uid = Math.floor(Math.random() * 9999999);
+
           server.form.forEach(file => {
+            this.$store.commit("SET_UPLOAD_LIST", {
+              file_name: file.file_name,
+              progress: null,
+              upload_id: uid,
+              status: "Uploading",
+              name: this.Name,
+              server_name: server.server_name,
+              total: 0,
+              loaded: 0
+            });
             formD.append("files", file.file, file.file_name);
           });
+
           formD.append(
             "template",
             JSON.stringify(this.TList[this.SelectTemplate].template)
           );
-
           formD.append("name", this.Name);
           formD.append("template_id", this.TList[this.SelectTemplate]._id);
           formD.append("description", this.Description);
@@ -307,14 +331,21 @@ export default {
           // Upload progress
           const config = {
             onUploadProgress: progressEvent => {
-              var percentCompleted = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total
-              );
+              var percentCompleted = parseInt( Math.round( ( progressEvent.loaded / progressEvent.total ) * 100 ));
 
-              this.$store.commit("UPDATE_UPLOAD_LIST", {
-                uid: uid,
-                progress: percentCompleted
-              });
+              if(progressEvent.loaded === progressEvent.total) {
+                this.$store.commit("DELETE_UPLOAD_LIST", {
+                  uid: uid
+                });
+
+              }else{
+                this.$store.commit("UPDATE_UPLOAD_LIST", {
+                  uid: uid,
+                  progress: percentCompleted,
+                  total: progressEvent.total,
+                  loaded: progressEvent.loaded
+                });
+              }
             },
             headers: {
               Authorization: server.api_key,
@@ -329,6 +360,7 @@ export default {
             url: server.domain
           });
 
+
           formD = new FormData();
         });
       } else {
@@ -339,23 +371,42 @@ export default {
             "template",
             JSON.stringify(this.TList[this.SelectTemplate].template)
           );
-
           formD.append("name", this.Name);
           formD.append("template_id", this.TList[this.SelectTemplate]._id);
           formD.append("description", this.Description);
+
+
+          this.$store.commit("SET_UPLOAD_LIST", {
+            file_name: file.name,
+            progress: null,
+            upload_id: uid,
+            status: "Uploading",
+            server_name: this.SList[this.SelectServer].name,
+            name: this.Name,
+            total: 0,
+            loaded: 0
+          });
         });
 
         // Upload progress
         const config = {
           onUploadProgress: progressEvent => {
-            var percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
+            var percentCompleted = parseInt( Math.round( ( progressEvent.loaded / progressEvent.total ) * 100 ));
+            console.log('loaded: ' + progressEvent.loaded + ' / total: ' + progressEvent.total);
 
-            this.$store.commit("UPDATE_UPLOAD_LIST", {
-              uid: uid,
-              progress: percentCompleted
-            });
+            if(progressEvent.loaded === progressEvent.total) {
+              this.$store.commit("DELETE_UPLOAD_LIST", {
+                uid: uid
+              });
+            }else{
+              this.$store.commit("UPDATE_UPLOAD_LIST", {
+                uid: uid,
+                progress: percentCompleted,
+                total: progressEvent.total,
+                loaded: progressEvent.loaded
+              });
+            }
+
           },
           headers: {
             Authorization: this.SList[this.SelectServer].api_key,
@@ -369,8 +420,9 @@ export default {
           uid: uid,
           url: this.SList[this.SelectServer].domain
         });
-      }
 
+
+      }
       setTimeout(() => {
         this.$router.push({ name: "jobs-manage" });
       }, 2000);

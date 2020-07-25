@@ -1,6 +1,6 @@
 .template-create-page {
   .presets {
-    &__head {
+    &__head, .splice-preset  {
       display: flex;
       flex-direction: row-reverse;
       .btn {
@@ -21,6 +21,7 @@
         }
       }
     }
+
     &__head,
     &__body {
       margin-top: 30px;
@@ -28,6 +29,26 @@
         margin: 40px 0;
         border: 1px solid #eaeaea;
       }
+    }
+    &__body {
+     &--list {
+       margin-bottom: 50px;
+       .splice-preset {
+         .btn {
+
+           .icon {
+             background-repeat: no-repeat;
+             background-size: 23px 16px;
+             width: 23px;
+             position: absolute;
+             top: 55%;
+             left: 51%;
+             height: 50%;
+             transform: translate(-50%, -50%);
+           }
+         }
+       }
+     }
     }
   }
 

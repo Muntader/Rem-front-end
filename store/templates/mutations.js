@@ -7,6 +7,10 @@ export const mutations = {
     state.Loading = true;
   },
 
+  SET_TEMPLATE_EDIT(state, data) {
+    state.TemplateEdit = data;
+  },
+
   DELETE_TEMPLATE_ITEM(state, index) {
     state.TemplateList.splice(index, 1);
   }

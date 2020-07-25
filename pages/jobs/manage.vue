@@ -27,6 +27,7 @@
     </div>
 
     <div class="app-jobs-manage__body" v-if="!RequestLoad">
+
       <div class="app-table">
         <table>
           <tr>
@@ -119,18 +120,18 @@
 
                 <div class="st-upload-s3" v-if="item.status === 'Upload-to-s3'">
                   <div class="dot"></div>
-                  <span>Upload To S3</span>
+                  <span>Uploading To S3</span>
                 </div>
                 <div class="st-finish" v-if="item.status === 'Finish'">
                   <div class="dot"></div>
-                  <span>Finish</span>
+                  <span>Successful</span>
                 </div>
                 <div class="st-error" v-if="item.status === 'Error'">
                   <div class="dot"></div>
                   <span>Error</span>
                 </div>
               </td>
-              <td>{{ item.CreatedAt }}</td>
+              <td>{{$dateFns.format(item.CreatedAt, 'yyyy-MM-dd  kk:mm:ss')}}</td>
               <td>
                 <div
                   class="app-table-more copy-link"
@@ -275,6 +276,7 @@
                           <li>Transcoding name</li>
                           <li>File name</li>
                           <li>Storage path</li>
+                          <li>Cloud/Cache URL</li>
                           <li v-if="item.format !== 'HLS-MP3'">Thumbnail path</li>
                           <li>Storage</li>
                           <li>Bucket</li>
@@ -317,6 +319,15 @@
                               }}/storage/{{ item.upload_id }}/HLS/master.m3u8
                             </a>
                           </li>
+                          <li>
+                            <a
+                              v-if="item.storage === 's3'"
+                              :href="$cookies.get('server-cloud')+'/'+item.upload_id +'/master.m3u8'"
+                            >
+                              {{$cookies.get('server-cloud')}}/{{item.upload_id }}/master.m3u8
+                            </a>
+
+                          </li>
                           <li v-if="item.format !== 'HLS-MP3'">
                             <a
                               v-if="item.storage === 's3'"
@@ -354,7 +365,7 @@
                           <li v-else>Local</li>
                           <li v-if="item.storage === 's3'">{{ item.bucket.String }}</li>
                           <li v-else>None</li>
-                          <li>{{ item.CreatedAt }}</li>
+                          <li>{{$dateFns.format(item.CreatedAt, 'yyyy-MM-dd  kk:mm:ss')}}</li>
                         </ul>
                       </div>
                       <hr />
@@ -378,17 +389,6 @@
               </td>
             </tr>
             <tr class="progress">
-              <td
-                colspan="9"
-                v-for="(pitem, pindex) in UList"
-                :key="pindex"
-                v-if="pitem.filename === item.file_name && pitem.progress < 98"
-              >
-                <div class="progress-meter">
-                  <span class="upload" :style="{ width: pitem.progress + '%' }"></span>
-                </div>
-              </td>
-
               <td colspan="9">
                 <div
                   class="progress-meter"
@@ -516,48 +516,13 @@ export default {
   },
 
   mounted() {
-    // Remove protocol from domain
-    const protocol = this.$cookies.get("server-url").slice(5);
 
-    // Create WebSocket connection.
-    this.wsconneciton = new WebSocket("ws:" + protocol + "/v1/ws/progress");
-    this.wsconneciton.onopen = function() {
-      console.log("connected");
-    };
-
-    this.wsconneciton.onclose = function(e) {
-      console.log("connection closed (" + e.code + ")");
-    };
-
-    this.wsconneciton.onmessage = e => {
-      console.log("message received: " + e.data);
-      // deserialize json data
-      var json = JSON.parse(e.data);
-      this.$store.commit("SET_TRANSCODING_PROGRESS_LIST", json);
-    };
-
-    // Create WebSocket connection.
-    this.wsconneciton = new WebSocket("ws:" + protocol + "/v1/ws/messages");
-    this.wsconneciton.onopen = function() {
-      console.log("connected");
-    };
-
-    this.wsconneciton.onclose = function(e) {
-      console.log("connection closed (" + e.code + ")");
-    };
-
-    this.wsconneciton.onmessage = e => {
-      // deserialize json data
-      var json = JSON.parse(e.data);
-
-      if (json.Status == "Progress") {
-        this.$store.commit("UPDATE_TRANSCODING_PROGRESS_STATUS", json);
-      }
-    };
   },
 
-  async fetch({ store }) {
-    await store.dispatch("GET_JOBS_LIST", "/api/v1/jobs/list/1");
+  async fetch({ store,  app: { $cookies } }) {
+    if(typeof  $cookies.get('server-url') !==  "undefined") {
+      await store.dispatch("GET_JOBS_LIST", "/api/v1/jobs/list/1");
+    }
   },
 
   methods: {
@@ -621,7 +586,8 @@ export default {
                 ]
               }
             ],
-            autostart: false
+            autostart: false,
+            playbackRateControls: true
           });
         }, 500);
       }
@@ -644,7 +610,9 @@ export default {
     },
 
     DeleteJob(id, index) {
-      this.$store.dispatch("DELETE_JOB", { ID: id, INDEX: index });
+      if (confirm("Are you sure to delete the job!")) {
+        this.$store.dispatch("DELETE_JOB", { ID: id, INDEX: index });
+      }
     },
 
     GenerateCSV(limit) {

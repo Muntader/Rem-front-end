@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar">
+  <div class="sidebar"v-if="$cookies.get('access_key')">
     <div class="sidebar-gradient"></div>
     <div class="sidebar__header">
       <img src="~/assets/icons/logo.png" alt="logo" />

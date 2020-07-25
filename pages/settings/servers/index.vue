@@ -136,13 +136,16 @@ export default {
     },
 
     async DeleteServer(id, index) {
-      this.DeleteButtonLoad = id;
-      await this.$store.dispatch("DELETE_SERVER", {
-        ID: id,
-        INDEX: index
-      });
+      if (confirm("Are you sure to delete the server!")) {
+        this.DeleteButtonLoad = id;
+        await this.$store.dispatch("DELETE_SERVER", {
+          ID: id,
+          INDEX: index
+        });
 
-      this.DeleteButtonLoad = null;
+        this.DeleteButtonLoad = null;
+      }
+
     }
   }
 };

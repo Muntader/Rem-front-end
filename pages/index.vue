@@ -12,7 +12,7 @@
             <div class="cards">
               <div class="cards__item blue-card" v-if="this.JobsCount != null">
                 <div class="calc">
-                  <p>SUCCESS TRNASCODE</p>
+                  <p>SUCCESS TRANSCODE</p>
                   <h3>{{this.JobsCount.success}}</h3>
                 </div>
                 <div class="icon icon-cpu"></div>
@@ -39,12 +39,12 @@
               <div class="cards">
                 <div
                   class="cards__item blue-card"
-                  :class="{'red-card': Math.trunc(this.SystemMonitor.cpu.cpu_system) > 80}"
+                  :class="{'red-card': Math.trunc(this.SystemMonitor.cpu.cpu_user) > 80}"
                   v-if="this.SystemMonitor != null"
                 >
                   <div class="calc">
                     <p>CPU</p>
-                    <h3>{{Math.trunc(this.SystemMonitor.cpu.cpu_system)}}%</h3>
+                    <h3>{{Math.trunc(this.SystemMonitor.cpu.cpu_user)}}%</h3>
                   </div>
                   <div class="icon icon-cpu"></div>
                 </div>
@@ -132,29 +132,31 @@ export default {
     };
   },
   mounted() {
- 
+
     // Remove protocol from domain
-    const protocol = this.$cookies.get("server-url").slice(5)
+    if (typeof this.$cookies.get("server-url") !== "undefined") {
+      const protocol = this.$cookies.get("server-url").slice(5)
 
       // get jobs list
-    this.GetJobsDaily();
-    this.GetJobsCount();
+      this.GetJobsDaily();
+      this.GetJobsCount();
 
-    // Create WebSocket connection.
-    this.wsconneciton = new WebSocket("ws:"+ protocol +"/v1/ws/dashboard");
-    this.wsconneciton.onopen = function() {
-      console.log("connected");
-    };
+      // Create WebSocket connection.
+      this.wsconneciton = new WebSocket("ws:" + protocol + "/v1/ws/dashboard");
+      this.wsconneciton.onopen = function () {
+        console.log("connected");
+      };
 
-    this.wsconneciton.onclose = function(e) {
-      console.log("connection closed (" + e.code + ")");
-    };
+      this.wsconneciton.onclose = function (e) {
+        console.log("connection closed (" + e.code + ")");
+      };
 
-    this.wsconneciton.onmessage = e => {
-      // deserialize json data
-      var json = JSON.parse(e.data);
-      this.SystemMonitor = json;
-    };
+      this.wsconneciton.onmessage = e => {
+        // deserialize json data
+        var json = JSON.parse(e.data);
+        this.SystemMonitor = json;
+      };
+    }
   },
 
   methods: {

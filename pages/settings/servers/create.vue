@@ -18,7 +18,7 @@
               name="t-name"
               type="text"
               class="f-border form-input"
-              placeholder="Template name"
+              placeholder="Server name"
             />
             <span>{{ errors[0] }}</span>
           </ValidationProvider>
@@ -65,7 +65,7 @@
 
         <!-- .form -->
         <div class="form btn-upload">
-          <button class="btn btn-blue" @click="CreateServer" v-if="!ButtonLoad">Upload</button>
+          <button class="btn btn-blue" @click="CreateServer()" v-if="!ButtonLoad">Upload</button>
           <button class="btn btn-blue" disabled v-else>
             <i class="ic-load ic-load-light"></i>
           </button>

@@ -71,6 +71,12 @@
                             ></span>
                           </a>
                         </li>
+                        <li class="item">
+                          <router-link :to="{name: 'template-update-id', params: {id: item._id}}">
+                            <span class="edit-icon"></span>
+                            Edit
+                          </router-link>
+                        </li>
                       </ul>
                     </div>
                   </transition>
@@ -96,7 +102,7 @@ export default {
     };
   },
   computed: mapState({
-    TList: state => state.templates.TemplateList
+    TList: state => state.templates.TemplateList,
   }),
   async fetch({ $axios, params, store }) {
     await store.dispatch("GET_TEMPLATES_LIST");
@@ -111,7 +117,7 @@ export default {
     },
 
     UpdateDropdown(index) {
-      if (this.ActiveOptionsDropdown == index) {
+      if (this.ActiveOptionsDropdown === index) {
         this.ActiveOptionsDropdown = null;
         return;
       }
@@ -119,13 +125,15 @@ export default {
     },
 
     async DeleteServer(id, index) {
-      this.DeleteButtonLoad = id;
-      await this.$store.dispatch("DELETE_TEMPLATE", {
-        ID: id,
-        INDEX: index
-      });
+      if (confirm("Are you sure to delete the template!")) {
+        this.DeleteButtonLoad = id;
+        await this.$store.dispatch("DELETE_TEMPLATE", {
+          ID: id,
+          INDEX: index
+        });
 
-      this.DeleteButtonLoad = null;
+        this.DeleteButtonLoad = null;
+      }
     }
   }
 };

@@ -1,6 +1,6 @@
 export const actions = {
   async nuxtServerInit({ dispatch }) {
-    return dispatch("GET_SERVER_LIST");
+   return dispatch("GET_SERVER_LIST");
   },
 
   async GET_JOBS_LIST({ commit }, url) {
@@ -24,7 +24,7 @@ export const actions = {
     );
   },
 
-  UPLOAD_VIDEOS_TO_SERVER({ commit }, { data, config, uid, url }) {
+  UPLOAD_VIDEOS_TO_SERVER({ commit,dispatch }, { data, config, uid, url }) {
     this.$axios
       .post(url + "/api/v1/upload", data, config)
       .then(res => {
@@ -33,10 +33,10 @@ export const actions = {
         });
       })
       .catch(err => {
-        this.$toast.success("Error to publish jobs in " + url + " Server", {
-          position: "top-right",
-          duration: 2000
-        });
+        // this.$toast.success("Error to publish jobs in " + url + " Server", {
+        //   position: "top-right",
+        //   duration: 2000
+        // });
       });
   },
 

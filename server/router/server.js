@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const jpv = require("jpv");
+const restrictMiddleware = require("../auth/restrictMiddleware");
 
 // Import server collection
 const serversModel = require("../database/models/servers");
@@ -12,7 +13,7 @@ const pattern = {
 };
 
 // Get server list
-router.get("/", async (req, res, next) => {
+router.get("/",restrictMiddleware, async (req, res, next) => {
   const list = await getServer.get();
   if (list.length === 0) {
     return res.json({ code: 204, data: null });
@@ -22,7 +23,7 @@ router.get("/", async (req, res, next) => {
 });
 
 // Get server item
-router.get("/edit/:id", async (req, res, next) => {
+router.get("/edit/:id",restrictMiddleware, async (req, res, next) => {
   const info = await getServer.getItem(req.params.id);
 
   if (info[0].length === 0) {
@@ -33,11 +34,11 @@ router.get("/edit/:id", async (req, res, next) => {
 });
 
 // Update server
-router.post("/update", async (req, res, next) => {
+router.post("/update",restrictMiddleware, async (req, res, next) => {
   const valid = jpv.validate(req.body, pattern);
 
   if (!valid) {
-    return res.status(401).json({ code: 401, message: "Error wrong data" });
+    return res.status(500).json({ code: 500, message: "Error wrong data" });
   }
 
   var insertServer = new serversModel(
@@ -56,18 +57,18 @@ router.post("/update", async (req, res, next) => {
 });
 
 // Delete server
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id",restrictMiddleware, async (req, res) => {
   const message = await getServer.delete(req.params.id);
 
   res.json({ code: 200, data: "Successful deleted id:" + req.params.id });
 });
 
 // Create server
-router.post("/create", async (req, res) => {
+router.post("/create",restrictMiddleware, async (req, res) => {
   const valid = jpv.validate(req.body, pattern);
 
   if (!valid) {
-    return res.json(401, { code: 401, message: "Error wrong data" });
+    return res.json(500, { code: 500, message: "Error wrong data" });
   }
 
   var insertServer = new serversModel(

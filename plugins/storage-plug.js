@@ -2,10 +2,8 @@ export default function({ $axios, app }, inject) {
   const getServerUrl = app.$cookies.get("server-url");
   const getServerName = app.$cookies.get("server-name");
   const getServerKey = app.$cookies.get("server-key");
+  const getAccessKey = app.$cookies.get('access_key')
 
-  $axios.onRequest(config => {
-    config.headers.common["Authorization"] = getServerKey;
-  });
 
   // Create a custom axios instance
   const api = $axios.create({
@@ -26,13 +24,26 @@ export default function({ $axios, app }, inject) {
   const nodeServerApi = $axios.create({
     headers: {
       common: {
-        Authorization: 33333
+        Authorization: getAccessKey
       }
     }
   });
 
+
+
   // Set baseURL to something different
   nodeServerApi.setBaseURL("http://localhost:3000");
+
+
+  nodeServerApi.interceptors.response.use(response => {
+    return response;
+  }, error => {
+    if (error.response.status === 401) {
+      app.$cookies.remove('access_key');
+      window.location.reload(true);
+    }
+    return error;
+  });
 
   // Inject to context as $nodeServerApi
   inject("nodeServerApi", nodeServerApi);
@@ -46,4 +57,7 @@ export default function({ $axios, app }, inject) {
       return getServerUrl;
     }
   });
+
+
+
 }
