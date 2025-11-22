@@ -1,22 +1,3 @@
 # Rem-front-end
 
-> the project is front-end for rem backend
-
-## Build Setup
-
-```bash
-# install dependencies
-$ npm install
-
-# serve with hot reload at localhost:3000
-$ npm run dev
-
-# build for production and launch server
-$ npm run build
-$ npm run start
-
-# generate static project
-$ npm run generate
-```
-
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+This is front-end of REM backend, But the auth solution is just insecure because it was used on internal network, if you want use it publicly be sure to add JWT solution. 
